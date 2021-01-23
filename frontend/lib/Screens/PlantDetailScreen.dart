@@ -27,6 +27,99 @@ class PlantDetailScreen extends StatelessWidget {
       );
     }
 
+    headerText(String text) {
+      return Text(text,
+          style: TextStyle(fontSize: 18), textAlign: TextAlign.center);
+    }
+
+    headerRow() {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 6),
+        child: Row(
+          children: [
+            Expanded(flex: 2, child: headerText('Date')),
+            Expanded(flex: 6, child: headerText('Approval')),
+            Expanded(flex: 3, child: headerText('Earnings')),
+          ],
+        ),
+      );
+    }
+
+    detailRow() {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 6),
+        margin: const EdgeInsets.symmetric(vertical: 2),
+        width: size.width,
+        height: 60,
+        color: theme.primaryColor,
+        child: Row(
+          children: [
+            Expanded(
+              flex: 2,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Jan',
+                    style: TextStyle(color: Colors.white, fontSize: 15),
+                  ),
+                  Text(
+                    '18',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  )
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 6,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.info_outline),
+                    onPressed: null,
+                    disabledColor: Colors.white,
+                    color: Colors.white,
+                  ),
+                  Text('Pending',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20)),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 3,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Credits',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  Text(
+                    '+5',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      );
+    }
+
+    plantHistory() {
+      return Container(
+        height: size.height * 0.448,
+        child: ListView.builder(
+          itemBuilder: (ctx, i) => detailRow(),
+          itemCount: 5,
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         shadowColor: Colors.transparent,
@@ -39,10 +132,11 @@ class PlantDetailScreen extends StatelessWidget {
               Navigator.of(context).pop();
             }),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Stack(
+      body: Column(
+        children: [
+          Container(
+            height: size.height * 0.35,
+            child: Stack(
               children: [
                 Container(
                   height: size.height * 0.35,
@@ -102,8 +196,10 @@ class PlantDetailScreen extends StatelessWidget {
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+          headerRow(),
+          plantHistory(),
+        ],
       ),
     );
   }
