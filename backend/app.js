@@ -12,7 +12,7 @@ mongoose
   .then(() => console.log('Growgreen database connected'))
   .catch(err => console.error(err))
 
-const userRouter = require('./routes/api/users');
+const userRouter = require('./routes/api/user');
 
 //Middlewares
 app.use(bodyParser.urlencoded({ extended: true }));
