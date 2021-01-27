@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:growgreen/Screens/LeaderboardScreen.dart';
 import 'package:growgreen/Screens/PlantDetailScreen.dart';
 import 'package:growgreen/Screens/ProfilePage.dart';
 import 'package:growgreen/Screens/RegisterScreen.dart';
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
         ProfilePage.routeName: (ctx) => ProfilePage(),
         RegisterScreen.routeName: (ctx) => RegisterScreen(),
         PlantDetailScreen.routeName: (ctx) => PlantDetailScreen(),
+        LeaderBoardScreen.routeName: (ctx) => LeaderBoardScreen(),
       },
       // ),
     );

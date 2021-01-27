@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:growgreen/Screens/LeaderboardScreen.dart';
 import 'package:growgreen/Screens/ProfilePage.dart';
 import 'package:growgreen/Screens/RegisterScreen.dart';
 
@@ -54,7 +55,9 @@ class Sidebar extends StatelessWidget {
                   color: Colors.white,
                   size: 30,
                 ),
-                onPressed: () {}),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(LeaderBoardScreen.routeName);
+                }),
           ),
           Spacer(),
           Padding(
