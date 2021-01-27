@@ -13,6 +13,7 @@ mongoose
   .catch(err => console.error(err))
 
 const userRouter = require('./routes/api/user');
+const plantedRouter = require('./routes/api/planted');
 
 //Middlewares
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -21,6 +22,7 @@ app.use(cors());
 
 //API routers
 app.use("/api/user", userRouter);
+app.use('/api/planted', plantedRouter);
 
 app.get('/', (req, res) => {
   res.json({"hello": 'hello mehran'});
