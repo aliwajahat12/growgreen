@@ -7,12 +7,12 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  FocusNode emailFocusNode, passwordFocusNode, phoneFocusNode;
+  FocusNode emailFocusNode, passwordFocusNode, nameFocusNode;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formkey = GlobalKey<FormState>();
   bool _showpass = false;
   // ignore: unused_field
-  String _email, _pass, _phone;
+  String _email, _pass, _name;
   bool _isLoading = false;
   bool isLogin = true;
 
@@ -20,7 +20,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   initState() {
     emailFocusNode = FocusNode();
     passwordFocusNode = FocusNode();
-    phoneFocusNode = FocusNode();
+    nameFocusNode = FocusNode();
     super.initState();
   }
 
@@ -28,13 +28,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   dispose() {
     emailFocusNode.dispose();
     passwordFocusNode.dispose();
-    phoneFocusNode.dispose();
+    nameFocusNode.dispose();
     super.dispose();
   }
 
   void _submit() async {
     emailFocusNode.unfocus();
-    phoneFocusNode.unfocus();
+    nameFocusNode.unfocus();
     passwordFocusNode.unfocus();
 
     final form = _formkey.currentState;
@@ -164,22 +164,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _phonefield() {
+  Widget _namefield() {
     return Container(
       width: MediaQuery.of(context).size.width * 0.85,
       padding: const EdgeInsets.only(top: 20),
       child: TextFormField(
         textInputAction: TextInputAction.done,
-        focusNode: phoneFocusNode,
+        focusNode: nameFocusNode,
         onFieldSubmitted: (_) => _submit(),
-        onSaved: (val) => _phone = val.trim(),
-        validator: (val) => val.length < 7 ? 'Enter Valid Phone Number' : null,
-        keyboardType: TextInputType.phone,
+        onSaved: (val) => _name = val.trim(),
+        validator: (val) => val.isEmpty ? 'Field Can not be Lfe Empty' : null,
+        keyboardType: TextInputType.name,
         decoration: InputDecoration(
           border: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(20))),
-          labelText: 'Phone Number',
-          hintText: 'Enter Phone Number',
+          labelText: 'Full Name',
+          hintText: 'Enter Full Name',
           // icon: Icon(Icons.phone)
         ),
       ),
@@ -197,7 +197,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         validator: (val) => val.length < 6 ? 'Password Too Short' : null,
         obscureText: _showpass ? false : true,
         onFieldSubmitted: (a) =>
-            isLogin ? _submit() : phoneFocusNode.requestFocus(),
+            isLogin ? _submit() : nameFocusNode.requestFocus(),
         decoration: InputDecoration(
           suffixIcon: GestureDetector(
               onTap: () {
@@ -317,7 +317,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         children: [
                           _emailfield(),
                           _passwordfield(),
-                          if (!isLogin) _phonefield(),
+                          if (!isLogin) _namefield(),
                           _formActionButton(),
                         ],
                       ),
