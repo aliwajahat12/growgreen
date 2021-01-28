@@ -73,7 +73,7 @@ module.exports = {
                 for (credit in credits) {
                     userCredits += credit.credits;
                 }
-                res.json({ 'userCredits': userCredits, 'creditDeatils': credits });
+                res.json({ 'userCredits': userCredits });
             } else {
                 res.json({ 'status': 'failed', 'reason': 'invalid' });
             }
@@ -92,7 +92,7 @@ module.exports = {
             user.country = country;
             user.state = state;
             user.address = address;
-            user.dob = dob;
+            user.dob = Date.parse(dob);
             await user.save();
             res.json({user});
         } catch (err) {
