@@ -39,7 +39,7 @@ module.exports = {
             if (user) {
                 const isValid = await bcrypt.compare(passwd, user.passwd);
                 if (isValid) {
-                    res.json({ "status": "success", 'id': user._id });
+                    res.json({ "status": "success", 'user_id': user._id });
                 } else {
                     res.json({ "status": "failed", "reason": 'invalid' });
                 }
@@ -54,7 +54,7 @@ module.exports = {
     getUserDetails: async (req, res) => {
         try {
             const { user_id } = req.params;
-            const user = await UserModel.findById(user_id);
+            const user = await UserModel.findById(user_id, '_id name email city country state address dob');
             if (user) res.json(user);
             else res.json({ 'status': 'failed', 'reason': 'invalid' });
         } catch (err) {
@@ -65,6 +65,7 @@ module.exports = {
     getUserCredits: async (req, res) => {
         try {
             const { user_id } = req.params;
+            const user = await UserModel.findById(user_id, '_id name email city country state address dob');
             if (user) {
                 const plantedPlants = await PlantedModel.find({ 'userId': mongoose.Schema.Types.ObjectId(user_id) });
                 const credits = await CreditModel.find({ 'plantedId': plantedPlants._id });
@@ -85,14 +86,14 @@ module.exports = {
         try {
             const {name, city, country, state, address, dob} = req.body;
             const {user_id} = req.params;
-            const user = UserModel.findById(user_id);
+            const user = await UserModel.findById(user_id, '_id name email city country state address dob');
             user.name = name;
             user.city = city;
             user.country = country;
             user.state = state;
             user.address = address;
             user.dob = dob;
-            user.save();
+            await user.save();
             res.json({user});
         } catch (err) {
             console.log("Error occurred: " + err.message);
