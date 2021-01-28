@@ -19,7 +19,7 @@ module.exports = {
                 const hash = await bcrypt.hash(passwd, await bcrypt.genSalt(Number(process.env.BCRYPT_SALTS)));
                 const newUser = new UserModel({ 'name': name, 'email': email, 'passwd': hash });
                 newUser.save();
-                res.json({ 'status': 'success' });
+                res.json({ 'status': 'success' , "user_id": newUser._id});
             }
         } catch (err) {
             console.error(err);
@@ -54,8 +54,8 @@ module.exports = {
     getUserDetails: async (req, res) => {
         try {
             const { user_id } = req.params;
-            const user = await UserModel.findById(user_id, '_id name email city country state address dob');
-            if (user) res.json(user);
+            const user = await UserModel.findById(user_id, '_id name email city country state address dob avatar');
+            if (user) res.json({user});
             else res.json({ 'status': 'failed', 'reason': 'invalid' });
         } catch (err) {
             console.log("Error occurred: " + err.message);
@@ -65,9 +65,9 @@ module.exports = {
     getUserCredits: async (req, res) => {
         try {
             const { user_id } = req.params;
-            const user = await UserModel.findById(user_id, '_id name email city country state address dob');
+            const user = await UserModel.findById(user_id, '_id');
             if (user) {
-                const plantedPlants = await PlantedModel.find({ 'userId': mongoose.Schema.Types.ObjectId(user_id) });
+                const plantedPlants = await PlantedModel.find({ 'userId': mongoose.Types.ObjectId(user_id) });
                 const credits = await CreditModel.find({ 'plantedId': plantedPlants._id });
                 let userCredits = 0;
                 for (credit in credits) {
@@ -86,7 +86,7 @@ module.exports = {
         try {
             const {name, city, country, state, address, dob} = req.body;
             const {user_id} = req.params;
-            const user = await UserModel.findById(user_id, '_id name email city country state address dob');
+            const user = await UserModel.findById(user_id, '_id name email city country state address dob avatar');
             user.name = name;
             user.city = city;
             user.country = country;

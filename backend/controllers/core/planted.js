@@ -20,6 +20,11 @@ module.exports = {
 
     },
     newPlant: async (req, res) => {
-
+        try {
+            const {user_id} = req.params;
+            const {plantId, placeId, location, images} = req.body;
+        } catch (err) {
+            
+        }
     }
 }

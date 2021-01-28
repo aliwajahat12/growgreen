@@ -19,13 +19,14 @@ const plantedRouter = require('./routes/api/planted');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
+app.use(express.static('./public'));
 
 //API routers
 app.use("/api/user", userRouter);
 app.use('/api/planted', plantedRouter);
 
 app.get('/', (req, res) => {
-  res.json({"hello": 'hello mehran'});
+  res.json({"Testing": '123'});
 })
 
 const PORT = process.env.PORT || 3000;

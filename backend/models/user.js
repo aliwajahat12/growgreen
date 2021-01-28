@@ -14,19 +14,28 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     city: {
-        type: String
+        type: String,
+        default: ""
     },
     country: {
-        type: String
+        type: String,
+        default: ""
     },
     state: {
-        type: String
+        type: String,
+        default: ""
     },
     address: {
-        type: String
+        type: String,
+        default: ""
     },
     dob: {
-        type: Date
+        type: Date,
+        default: Date.parse("1-Jan-1970")
+    },
+    avatar: {
+        type: String,
+        default: "https://cdn2.iconfinder.com/data/icons/4web-3/139/header-account-image-line-512.png"
     }
 });
 
