@@ -1,11 +1,15 @@
 const UserModel = require('../../models/user');
 const PlantedModel = require('../../models/planted');
+const CreditModel = require('../../models/credit');
 
 module.exports = {
-    getPlantedDetails: (req, res) => {
+    getPlanted: async (req, res) => {
 
     },
-    getPlantedLeaderboard: (req, res) => {
+    getPlantedLeaderboard: async (req, res) => {
+        
+    },
+    newPlant: async (req, res) => {
         
     }
 }
