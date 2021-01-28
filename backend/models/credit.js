@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const wateredSchema = new mongoose.Schema({
+const creditsSchema = new mongoose.Schema({
     plantedId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'planted',
@@ -21,4 +21,4 @@ const wateredSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('watered', wateredSchema);
+module.exports = mongoose.model('credit', creditsSchema);
