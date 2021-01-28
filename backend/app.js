@@ -14,6 +14,9 @@ mongoose
 
 const userRouter = require('./routes/api/user');
 const plantedRouter = require('./routes/api/planted');
+const creditRouter = require('./routes/api/credit');
+const plantRouter = require('./routes/api/plant');
+const placeRouter = require('./routes/api/place');
 
 //Middlewares
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,6 +27,9 @@ app.use(express.static('./public'));
 //API routers
 app.use("/api/user", userRouter);
 app.use('/api/planted', plantedRouter);
+app.use('/api/credit', creditRouter);
+app.use('/api/plant', plantRouter);
+app.use('/api/place', placeRouter);
 
 app.get('/', (req, res) => {
   res.json({"Testing": '123'});

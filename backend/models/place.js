@@ -10,8 +10,14 @@ const placeSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
-    coordX: Number,
-    cooedY: Number
+    lat:{
+        type: Number,
+        required: true
+    },
+    long:{
+        type: Number,
+        required: true
+    }
 })
 
 module.exports = mongoose.model('place', placeSchema)
