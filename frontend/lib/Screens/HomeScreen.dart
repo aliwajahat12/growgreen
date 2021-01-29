@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:growgreen/Models/User.dart';
 import 'package:growgreen/widgets/homeScreen/Sidebar.dart';
 import 'package:growgreen/widgets/homeScreen/UserPlants.dart';
 import 'package:growgreen/widgets/homeScreen/calender.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/homeScreen';
@@ -50,12 +52,21 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               alignment: Alignment.centerRight,
               padding: EdgeInsets.only(right: 12.0),
-              child: Text(
-                'Credits: 125',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                ),
+              child: FutureBuilder(
+                future: Provider.of<User>(context).getUserCredits(),
+                builder: (ctx, snap) {
+                  if (snap.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else {
+                    return Text(
+                      'Credits: ${snap.data}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
+                    );
+                  }
+                },
               ),
             ),
             SizedBox(

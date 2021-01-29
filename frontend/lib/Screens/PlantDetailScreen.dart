@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:growgreen/Screens/CameraScreen.dart';
 
 class PlantDetailScreen extends StatelessWidget {
   static const routeName = '/plantDetail';
@@ -146,7 +147,9 @@ class PlantDetailScreen extends StatelessWidget {
                   // top: size.height * 0.05,
                   right: size.width * 0.05,
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(CameraScreen.routeName);
+                    },
                     icon: Icon(
                       Icons.add_a_photo,
                       color: Colors.white,

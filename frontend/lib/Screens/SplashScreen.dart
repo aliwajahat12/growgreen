@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:growgreen/Screens/HomeScreen.dart';
+// import 'package:growgreen/Screens/HomeScreen.dart';
+import 'package:growgreen/Screens/RegisterScreen.dart';
 import 'package:splashscreen/splashscreen.dart' as ss;
 
 class SplashScreen extends StatefulWidget {
@@ -18,8 +19,10 @@ class _SplashScreenState extends State<SplashScreen> {
       await Future.delayed(const Duration(seconds: 4));
       // isLoggedIn = Provider.of<ClassUser.User>(context, listen: false).loggedIn;
       return Future.value(
-          // isLoggedIn ? MainScreen() : UserOrganizationSelectScreen()
-          HomeScreen());
+        // isLoggedIn ? MainScreen() : UserOrganizationSelectScreen()
+        // HomeScreen()
+        RegisterScreen(),
+      );
     }
 
     return Scaffold(

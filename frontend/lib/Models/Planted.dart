@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Planted {
+class Planted with ChangeNotifier {
   String userID;
   String plantID;
   String placeID;
@@ -10,9 +10,9 @@ class Planted {
   DateTime date;
 
   Planted({
-    @required this.userID,
-    @required this.plantID,
-    @required this.placeID,
+    this.userID,
+    this.plantID,
+    this.placeID,
     this.latitude,
     this.longitude,
     this.media,

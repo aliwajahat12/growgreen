@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Seller {
+class Seller with ChangeNotifier {
   String sellerID;
   String name;
   String latitude;
@@ -8,10 +8,10 @@ class Seller {
   List<String> availablePlants;
 
   Seller({
-    @required this.sellerID,
-    @required this.name,
-    @required this.latitude,
-    @required this.longitude,
+    this.sellerID,
+    this.name,
+    this.latitude,
+    this.longitude,
   });
 
   Seller.fromJson(Map<String, dynamic> json)

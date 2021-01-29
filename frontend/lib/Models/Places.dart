@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Place {
+class Place with ChangeNotifier {
   String placeID;
   String ownerID;
   bool isPublic;
@@ -9,9 +9,9 @@ class Place {
   String longitude;
 
   Place({
-    @required this.placeID,
-    @required this.ownerID,
-    @required this.isPublic,
+    this.placeID,
+    this.ownerID,
+    this.isPublic,
     this.latitude,
     this.longitude,
   });

@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 
-class Credits {
+class Credits with ChangeNotifier {
   String userID;
   String plantID;
   String placeID;
   int credits;
   String reason;
   DateTime date;
+  String image;
 
   Credits({
-    @required this.userID,
-    @required this.plantID,
-    @required this.placeID,
-    @required this.credits,
-    @required this.reason,
-    @required this.date,
+    this.userID,
+    this.plantID,
+    this.placeID,
+    this.credits,
+    this.reason,
+    this.date,
+    this.image,
   });
 
   Credits.fromJson(Map<String, dynamic> json)
@@ -23,5 +25,6 @@ class Credits {
         this.placeID = json['placeID'],
         this.credits = json['credits'].toint(),
         this.reason = json['reason'],
+        this.image = json['image'],
         this.date = json['date'].toDate();
 }
