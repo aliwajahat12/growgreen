@@ -34,6 +34,7 @@ class _CameraScreenState extends State<CameraScreen> {
           maxHeight: 600,
           imageQuality: 100,
         );
+        await _getCurrentLocation();
         setState(() {
           _imageFile = pickedFile;
         });
@@ -136,7 +137,6 @@ class _CameraScreenState extends State<CameraScreen> {
   Future<void> getImageAndLocation(ImageSource source,
       {BuildContext context}) async {
     await _onImageButtonPressed(ImageSource.camera, false, context: context);
-    await _getCurrentLocation();
   }
 
   @override
@@ -240,8 +240,6 @@ class _CameraScreenState extends State<CameraScreen> {
       ),
       body: SafeArea(
         child: FutureBuilder<void>(
-          // future: _onImageButtonPressed(ImageSource.camera, false,
-          //     context: context),
           future: getImageAndLocation(ImageSource.camera, context: context),
           // ignore: missing_return
           builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
