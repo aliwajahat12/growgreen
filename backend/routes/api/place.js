@@ -1,5 +1,5 @@
 const express = require('express');
-const {addPlace, getPlace} = require('../../controllers/core/place');
+const {addPlace, getUserPlaces} = require('../../controllers/core/place');
 
 const  router = express.Router();
 
@@ -8,9 +8,9 @@ const  router = express.Router();
 // @ access:    logged in user
 router.post('/', addPlace);
 
-// @ route:     GET /api/place/:place_id
+// @ route:     GET /api/place/:user_id
 // @ desc:      Get a place details
-// @ access:    public
-router.get('/:place_id/', getPlace);
+// @ access:    user can get his/her own private places.
+router.get('/:user_id/', getUserPlaces);
 
 module.exports = router;
