@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:growgreen/Screens/CameraScreen.dart';
 import 'package:growgreen/Screens/LeaderboardScreen.dart';
 import 'package:growgreen/Screens/ProfilePage.dart';
 import 'package:growgreen/Screens/RegisterScreen.dart';
@@ -45,7 +46,9 @@ class Sidebar extends StatelessWidget {
                   color: Colors.white,
                   size: 30,
                 ),
-                onPressed: () {}),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(CameraScreen.routeName);
+                }),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5.0),
@@ -64,11 +67,14 @@ class Sidebar extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 12.0),
             child: IconButton(
                 icon: Icon(
-                  Icons.home,
+                  Icons.power_settings_new,
                   color: Colors.white,
-                  size: 35,
+                  size: 25,
                 ),
-                onPressed: () {}),
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushReplacementNamed(RegisterScreen.routeName);
+                }),
           ),
         ],
       ),

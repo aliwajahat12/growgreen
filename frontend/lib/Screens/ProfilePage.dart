@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:growgreen/Models/User.dart';
+import 'package:growgreen/Screens/UpdateUserInfoScreen.dart';
 import 'package:growgreen/widgets/profilepage/semiCircle.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
   static const routeName = '/profile';
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final user = Provider.of<User>(context);
 
-    iconButtonWidget(IconData icon) {
+    iconButtonWidget(IconData icon, Function func) {
       return Container(
         // alignment: Alignment.centerLeft,
         height: 50,
@@ -22,7 +27,7 @@ class ProfilePage extends StatelessWidget {
               color: Theme.of(context).accentColor,
               size: 35,
             ),
-            onPressed: () {}),
+            onPressed: func),
       );
     }
 
@@ -80,7 +85,6 @@ class ProfilePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
         leading: IconButton(
             icon: Icon(
@@ -91,78 +95,94 @@ class ProfilePage extends StatelessWidget {
               Navigator.of(context).pop();
             }),
       ),
-      body:
-          // SingleChildScrollView(
-          //   child:
-          Column(
-        children: [
-          Container(
-            height: size.height * 0.42,
-            child: Stack(
+      body: FutureBuilder(
+        future: user.getUserDetails(),
+        builder: (ctx, snap) {
+          if (snap.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return Column(
               children: [
-                // background
-                SemiCircle(
-                  diameter: size.width,
-                ),
-                //profile Image
-                Positioned(
-                  left: size.width * 0.33,
-                  child: Container(
-                    height: size.height * 0.2,
-                    width: size.width * 0.3,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
-                    child: Image.network(
-                      'https://www.clipartkey.com/mpngs/m/151-1515360_transparent-profile-clipart-male-user-icon.png',
-                      fit: BoxFit.cover,
-                    ),
+                Container(
+                  height: size.height * 0.42,
+                  child: Stack(
+                    children: [
+                      // background
+                      SemiCircle(
+                        diameter: size.width,
+                      ),
+                      //profile Image
+                      Positioned(
+                        left: size.width * 0.33,
+                        child: Container(
+                          height: size.height * 0.2,
+                          width: size.width * 0.3,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          child: Image.network(
+                            user.image ??
+                                'https://www.clipartkey.com/mpngs/m/151-1515360_transparent-profile-clipart-male-user-icon.png',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      //help button
+                      Positioned(
+                          top: size.height * 0.18,
+                          left: size.width * 0.05,
+                          child: iconButtonWidget(Icons.help, () {})),
+                      //camera Button
+                      Positioned(
+                        top: size.height * 0.28,
+                        left: size.width * 0.25,
+                        child: iconButtonWidget(Icons.photo_camera, () {}),
+                      ),
+                      //Edit Button
+                      Positioned(
+                        top: size.height * 0.28,
+                        right: size.width * 0.25,
+                        child: iconButtonWidget(Icons.edit, () {
+                          Navigator.of(context)
+                              .pushNamed(UpdateUserInfoScreen.routeName);
+                        }),
+                      ),
+                      //Delete Button
+                      Positioned(
+                        top: size.height * 0.18,
+                        right: size.width * 0.05,
+                        child: iconButtonWidget(Icons.delete, () {}),
+                      ),
+                    ],
                   ),
                 ),
-                //help button
-                Positioned(
-                    top: size.height * 0.18,
-                    left: size.width * 0.05,
-                    child: iconButtonWidget(Icons.help)),
-                //camera Button
-                Positioned(
-                  top: size.height * 0.28,
-                  left: size.width * 0.25,
-                  child: iconButtonWidget(Icons.photo_camera),
-                ),
-                //Edit Button
-                Positioned(
-                  top: size.height * 0.28,
-                  right: size.width * 0.25,
-                  child: iconButtonWidget(Icons.edit),
-                ),
-                //Delete Button
-                Positioned(
-                  top: size.height * 0.18,
-                  right: size.width * 0.05,
-                  child: iconButtonWidget(Icons.delete),
+                SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      detailRowWidget(
+                          'NAME', user.name, 'PASSWORD', '********'),
+                      detailRowWidget('EMAIL', user.email, 'DOB',
+                          DateFormat.yMMMd().format(user.dob)),
+                      // detailRowWidget(
+                      //     'COUNTRY', user.country, 'CITY', user.city),
+                      detailRowWidget(
+                          'CITY', user.city, 'ADDRESS', user.address),
+                      // detailRowWidget(
+                      //     'STATE', 'Sindh', 'ADDRESS', user.address),
+                    ],
+                  ),
                 ),
               ],
-            ),
-          ),
-          SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                detailRowWidget('NAME', 'Rohaan Khan', 'PASSWORD', '********'),
-                detailRowWidget(
-                    'EMAIL', 'rohaan@yahoo.com', 'DOB', '14-11-1990'),
-                detailRowWidget('COUNTRY', 'Pakistan', 'CITY', 'Karachi'),
-                detailRowWidget('STATE', 'Sindh', 'ADDRESS',
-                    'House B289,Gulistan e Jauhar, Karachi.'),
-              ],
-            ),
-          ),
-        ],
+            );
+          }
+        },
       ),
-      // ),
     );
   }
 }

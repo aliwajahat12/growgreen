@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:growgreen/Models/User.dart';
+import 'package:growgreen/Screens/HomeScreen.dart';
+import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const routeName = '/register-screen';
@@ -43,15 +46,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
       var msg = await _registerUser();
       // .then((value) {
       if (msg == '') {
-        if (!isLogin) {
-          // Navigator.of(context)
-          //     .pushReplacementNamed(RegisterUserDetailScreen.routeName);
-        } else {
-          // Navigator.of(context).pushNamedAndRemoveUntil(
-          //     NavigationScreen.routeName, (route) => false);
-          // Navigator.popUntil(
-          //     context, ModalRoute.withName(Navigator.defaultRouteName));
-        }
+        // if (!isLogin) {
+        Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+        // } else {
+        // Navigator.of(context).pushNamedAndRemoveUntil(
+        //     NavigationScreen.routeName, (route) => false);
+        // Navigator.popUntil(
+        //     context, ModalRoute.withName(Navigator.defaultRouteName));
+        // }
         // });
       } else {
         print('Invalid Entry');
@@ -173,7 +175,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         focusNode: nameFocusNode,
         onFieldSubmitted: (_) => _submit(),
         onSaved: (val) => _name = val.trim(),
-        validator: (val) => val.isEmpty ? 'Field Can not be Lfe Empty' : null,
+        validator: (val) => val.isEmpty ? 'Field Can not be Left Empty' : null,
         keyboardType: TextInputType.name,
         decoration: InputDecoration(
           border: OutlineInputBorder(
@@ -266,11 +268,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _isLoading = true;
     });
     if (isLogin) {
-      // msg = await Provider.of<UserClass.User>(context, listen: false)
-      //     .signIn(_email, _pass);
+      msg =
+          await Provider.of<User>(context, listen: false).signIn(_email, _pass);
     } else {
-      // msg = await Provider.of<UserClass.User>(context, listen: false)
-      //     .registerUser(_email, _pass, _phone);
+      msg = await Provider.of<User>(context, listen: false)
+          .signUp(_name, _email, _pass);
       // .then((value) => Navigator.of(context)
       //     .pushNamed(RegisterUserDetailScreen.routeName));
     }

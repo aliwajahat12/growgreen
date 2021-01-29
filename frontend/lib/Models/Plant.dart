@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Plant {
+class Plant with ChangeNotifier {
   String plantID;
   String name;
   String pic;
@@ -8,9 +8,9 @@ class Plant {
   List<int> credits;
 
   Plant({
-    @required this.plantID,
-    @required this.name,
-    @required this.pic,
+    this.plantID,
+    this.name,
+    this.pic,
     this.growthRequirements,
     this.credits,
   });
