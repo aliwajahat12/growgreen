@@ -84,20 +84,18 @@ module.exports = {
     },
     updateUserDetails: async (req, res) => {
         try {
-            const {name, city, country, state, address, dob} = req.body;
+            const {name, city, address, dob} = req.body;
             const {user_id} = req.params;
             const user = await UserModel.findById(user_id, '_id name email city country state address dob avatar');
             user.name = name;
             user.city = city;
-            user.country = country;
-            user.state = state;
             user.address = address;
             user.dob = Date.parse(dob);
             await user.save();
             res.json({user});
         } catch (err) {
             console.log("Error occurred: " + err.message);
-            res.json({ 'status': 'failed', 'reason': 'error', 'error': err.message });
+            res.json({ 'status': 'fail', 'reason': 'error', 'error': err.message });
         }
     }
 }
