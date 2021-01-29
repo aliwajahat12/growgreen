@@ -13,7 +13,7 @@ module.exports = {
                     const newUpload = new UploadModel({"userId": mongoose.Types.ObjectId(user_id), "url": "/media/" + req.file.filename});
                     console.log(req.file);
                     await newUpload.save();
-                    res.json({"status": "success", "url": newUpload.url});
+                    res.json({"status": "success", "url": newUpload.url, "upload_id": newUpload._id});
                 } catch (err) {
                     console.log("Error: ", err.message);
                     res.json({ 'status': 'fail', 'reason': err.message });
