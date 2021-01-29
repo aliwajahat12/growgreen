@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const PlaceModel = require('../../models/place');
-const UserModel = require('../../models/user');
 
 module.exports = {
     addPlace: async (req, res) => {
@@ -28,7 +27,6 @@ module.exports = {
         try {
             const { user_id } = req.params;
             const place = await PlaceModel.find({ "$or": [{ 'ownerId': mongoose.Types.ObjectId(user_id) }, { "isPublic": true }] });
-            place.ownerId = null;
             res.json({ place });
         } catch (err) {
             console.log("Error: ", err.message);
