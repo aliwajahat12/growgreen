@@ -18,13 +18,13 @@ module.exports = {
                 console.log(process.env.BCRYPT_SALTS);
                 const hash = await bcrypt.hash(passwd, await bcrypt.genSalt(Number(process.env.BCRYPT_SALTS)));
                 const newUser = new UserModel({ 'name': name, 'email': email, 'passwd': hash });
-                newUser.save();
+                await newUser.save();
                 res.json({ 'status': 'success' , "user_id": newUser._id});
             }
         } catch (err) {
             console.error(err);
             if (err === 'exists') {
-                res.json({ 'status': 'fail', 'reason': 'user already exists' })
+                res.json({ 'status': 'fail', 'reason': 'user already exists' });
             }
             else {
                 res.json({ 'status': 'fail', 'reason': err.message });

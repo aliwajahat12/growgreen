@@ -16,13 +16,10 @@ module.exports = {
         }
 
     },
-    getPlantedLeaderboard: async (req, res) => {
-
-    },
     newPlant: async (req, res) => {
         try {
             const {user_id} = req.params;
-            const {plantId, placeId, location, images} = req.body;
+            const {plantId, placeId, location} = req.body;
         } catch (err) {
             
         }
