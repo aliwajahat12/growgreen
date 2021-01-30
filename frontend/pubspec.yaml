@@ -27,11 +27,9 @@ dependencies:
   provider: ^4.3.3
   image_picker: ^0.6.7+21
   geolocator: ^5.3.1
-  camera: ^0.7.0
   http: ^0.12.2
   intl: ^0.16.1
-  path: ^1.7.0
-  dio: ^3.0.10
+  url_launcher: ^5.7.10
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -41,6 +39,14 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.8.1
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/logoLauncher.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/logoLauncher.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -59,6 +65,8 @@ flutter:
     - assets/logoWhite.png
     - assets/logoVertical.png
     - assets/logoHorizontal.png
+    - assets/logoLauncher.png
+
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
