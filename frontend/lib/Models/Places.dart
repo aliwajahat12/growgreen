@@ -43,10 +43,9 @@ class Places with ChangeNotifier {
       final responseData = jsonDecode(response.body);
       Iterable list = responseData['place'];
       _placeslist = list.map((model) => Place.fromJson(model)).toList();
-      _placeslist.forEach((e) {
-        print('${e.isPublic} ${e.latitude} ${e.longitude}');
-      });
-      // print(_placeslist);
+      // _placeslist.forEach((e) {
+      //   print('${e.isPublic} ${e.latitude} ${e.longitude}');
+      // });
     } catch (e) {
       print(e);
     }

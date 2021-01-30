@@ -83,6 +83,19 @@ class ProfilePage extends StatelessWidget {
       );
     }
 
+    containerbg() {
+      return Container(
+          width: size.width,
+          height: size.height * 0.32,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30),
+            ),
+            color: Theme.of(context).primaryColor,
+          ));
+    }
+
     return Scaffold(
       appBar: AppBar(
         shadowColor: Colors.transparent,
@@ -110,9 +123,10 @@ class ProfilePage extends StatelessWidget {
                   child: Stack(
                     children: [
                       // background
-                      SemiCircle(
-                        diameter: size.width,
-                      ),
+                      containerbg(),
+                      // SemiCircle(
+                      //   diameter: size.width,
+                      // ),
                       //profile Image
                       Positioned(
                         left: size.width * 0.33,
@@ -133,19 +147,19 @@ class ProfilePage extends StatelessWidget {
                       ),
                       //help button
                       Positioned(
-                          top: size.height * 0.18,
+                          top: size.height * 0.28,
                           left: size.width * 0.05,
                           child: iconButtonWidget(Icons.help, () {})),
                       //camera Button
                       Positioned(
                         top: size.height * 0.28,
-                        left: size.width * 0.25,
+                        left: size.width * 0.30,
                         child: iconButtonWidget(Icons.photo_camera, () {}),
                       ),
                       //Edit Button
                       Positioned(
                         top: size.height * 0.28,
-                        right: size.width * 0.25,
+                        right: size.width * 0.30,
                         child: iconButtonWidget(Icons.edit, () {
                           Navigator.of(context)
                               .pushNamed(UpdateUserInfoScreen.routeName);
@@ -153,7 +167,7 @@ class ProfilePage extends StatelessWidget {
                       ),
                       //Delete Button
                       Positioned(
-                        top: size.height * 0.18,
+                        top: size.height * 0.28,
                         right: size.width * 0.05,
                         child: iconButtonWidget(Icons.delete, () {}),
                       ),
