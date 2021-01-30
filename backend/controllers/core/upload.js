@@ -15,8 +15,8 @@ module.exports = {
                     await newUpload.save();
                     res.json({"status": "success", "url": newUpload.url, "upload_id": newUpload._id});
                 } catch (err) {
-                    console.log("Error: ", err.message);
-                    res.json({ 'status': 'fail', 'reason': err.message });
+                    console.log("Error: ", err);
+                    res.json({ 'status': 'fail', 'reason': err });
                 }
             }
         });

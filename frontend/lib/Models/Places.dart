@@ -1,25 +1,55 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class Place with ChangeNotifier {
+import 'package:flutter/material.dart';
+import 'package:growgreen/Models/User.dart';
+import 'package:http/http.dart' as http;
+
+class Place {
   String placeID;
   String ownerID;
   bool isPublic;
-  String city;
-  String latitude;
-  String longitude;
+  String name;
+  String image;
+  double latitude;
+  double longitude;
 
   Place({
     this.placeID,
     this.ownerID,
     this.isPublic,
+    this.name,
+    this.image,
     this.latitude,
     this.longitude,
   });
 
   Place.fromJson(Map<String, dynamic> json)
-      : this.placeID = json['placeID'],
-        this.ownerID = json['ownerID'],
+      : this.placeID = json['_id'],
+        this.ownerID = json['ownerId'],
         this.isPublic = json['isPublic'],
-        this.latitude = json['latitude'],
-        this.longitude = json['longitude'];
+        this.name = json['name'],
+        this.image = json['image'],
+        this.latitude = json['lat'].toDouble(),
+        this.longitude = json['long'].toDouble();
+}
+
+class Places with ChangeNotifier {
+  List<Place> _placeslist;
+
+  Future<List<Place>> getPlaces(String userID) async {
+    _placeslist = [];
+    try {
+      final response = await http.get(backendLink + 'place/$userID');
+      final responseData = jsonDecode(response.body);
+      Iterable list = responseData['place'];
+      _placeslist = list.map((model) => Place.fromJson(model)).toList();
+      _placeslist.forEach((e) {
+        print('${e.isPublic} ${e.latitude} ${e.longitude}');
+      });
+      // print(_placeslist);
+    } catch (e) {
+      print(e);
+    }
+    return [..._placeslist];
+  }
 }

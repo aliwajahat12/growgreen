@@ -13,16 +13,18 @@ const upload = multer({
     limits: {
         fileSize: 1000000
     },
-    fileFilter: function(req, file, cb) {
-        const filetypes = /jpeg|jpg|png|gif/;
-        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-        const mimetype = filetypes.test(file.mimetype);
-        if(mimetype && extname){
-            return cb(null, true);
-        } else {
-            cb('Error: Images only.');
-        }
-    }
+    // fileFilter: function(req, file, cb) {
+    //     const filetypes = /jpeg|jpg|png|gif/;
+    //     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    //     const mimetype = filetypes.test(file.mimetype);
+    //     if(mimetype && extname){
+    //         console.log('CallBack null');
+    //         return cb(null, true);
+    //     } else {
+    //         console.log('CallBack Error');
+    //         cb('Error: Images only.',false);
+    //     }
+    // }
 }).single('image-upload');
 
 module.exports = {upload};
