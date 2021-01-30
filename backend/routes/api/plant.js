@@ -1,5 +1,5 @@
 const express = require('express');
-const {detectPlant, isAreaPlantable} = require('../../controllers/core/plant');
+const {detectPlant, isAreaPlantable, addPlant} = require('../../controllers/core/plant');
 
 const  router = express.Router();
 
@@ -12,5 +12,10 @@ router.post("/detect_plant", detectPlant);
 // @ desc:      returns a url to detected plant image.
 // @ access:    logged in user
 router.post("/is_plantable/", isAreaPlantable);
+
+// @ route:     POST /api/plant/
+// @ desc:      Add a new plant
+// @ access:    admin
+router.post("/", addPlant);
 
 module.exports = router;

@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 
 const sellerSchema = new mongoose.Schema({
     name: {
-        type: String
+        type: String,
+        required: true
     },
     address: {
         type: String,
@@ -17,7 +18,8 @@ const sellerSchema = new mongoose.Schema({
         required: true
     },
     state: {
-        type: String
+        type: String,
+        required: true
     },
     availablePlants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'plant' }]
 })

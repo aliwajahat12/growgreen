@@ -16,10 +16,6 @@ const plantedSchema = new mongoose.Schema({
         ref: 'place',
         required: true
     },
-    location: {
-        type: String,
-        required: true
-    },
     images: [{
         type: String,
         required: true

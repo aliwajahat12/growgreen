@@ -11,7 +11,7 @@ const plantSchema = new mongoose.Schema({
     },
     wateringInterval: Number,
     wateringAmount: Number,
-    soilPH: Number,
+    soilPh: Number,
     plantingCredits: Number,
     wateringCredits: Number
 })

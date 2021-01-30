@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema({
     },
     dob: {
         type: Date,
-        default: Date.parse("1-Jan-1970")
+        default: Date.parse("1-Jan-1990")
     },
     avatar: {
         type: String,

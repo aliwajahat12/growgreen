@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const creditsSchema = new mongoose.Schema({
+const creditSchema = new mongoose.Schema({
     plantedId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'planted',
@@ -21,4 +21,4 @@ const creditsSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('credit', creditsSchema);
+module.exports = mongoose.model('credit', creditSchema);
