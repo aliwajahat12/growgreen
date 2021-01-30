@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:growgreen/Screens/CameraScreen.dart';
 import 'package:growgreen/Screens/LeaderboardScreen.dart';
+import 'package:growgreen/Screens/PlacesListScreen.dart';
 import 'package:growgreen/Screens/ProfilePage.dart';
 import 'package:growgreen/Screens/RegisterScreen.dart';
 
@@ -23,7 +24,7 @@ class Sidebar extends StatelessWidget {
                   size: 30,
                 ),
                 onPressed: () {
-                  Navigator.of(context).pushNamed(RegisterScreen.routeName);
+                  Navigator.of(context).pushNamed(PlacesListScreen.routeName);
                 }),
           ),
           Padding(

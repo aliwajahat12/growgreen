@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:growgreen/Models/Plant.dart';
+import 'package:growgreen/Models/User.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 
 class CameraScreen extends StatefulWidget {
   static const routeName = '/camera-screen';
@@ -13,7 +16,9 @@ class CameraScreen extends StatefulWidget {
 class _CameraScreenState extends State<CameraScreen> {
   bool isInit = false;
   PickedFile _imageFile;
+  // ignore: unused_field
   dynamic _pickImageError;
+  // ignore: unused_field
   String _retrieveDataError;
   Position _currentPosition;
   String _currentAddress = '';
@@ -214,7 +219,13 @@ class _CameraScreenState extends State<CameraScreen> {
               ),
               Spacer(),
               IconButton(
-                onPressed: () {},
+                onPressed: () async {
+                  print('Going In Func');
+                  await Provider.of<Plant>(context, listen: false).addPlace(
+                      File(_imageFile.path),
+                      Provider.of<User>(context, listen: false).userID);
+                  print('Return From Func');
+                },
                 icon: Icon(
                   Icons.arrow_forward_ios,
                   color: i == 0 ? Colors.white : Color(0xFF218754),

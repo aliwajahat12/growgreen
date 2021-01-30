@@ -75,7 +75,6 @@ class User with ChangeNotifier {
       final response = await http.get(backendLink + 'user/$userID');
       final responseBody1 = jsonDecode(response.body);
       final responseBody = responseBody1['user'];
-      print('In getUserDetails' + responseBody.toString());
 
       this.name = responseBody['name'];
       this.email = responseBody['email'];
@@ -93,8 +92,8 @@ class User with ChangeNotifier {
   }
 
   Future<void> getUserCredits() async {
-    int credits = -1;
-    print(userID);
+    int credits = 0;
+    // print(userID);
     try {
       final response = await http.get(backendLink + 'user/$userID/credits');
       final responseBody = jsonDecode(response.body);
@@ -113,11 +112,12 @@ class User with ChangeNotifier {
         'name': newName,
         'address': newAdd,
         'city': newCity,
-        'dob': newDob.toUtc(),
+        'dob': newDob.toIso8601String(),
       });
       final responseBody = jsonDecode(response.body);
-      if (responseBody['status'] != 'success')
-        msg = responseBody['status'];
+      if (responseBody['status'] != null)
+        // msg = responseBody['error'];
+        msg = responseBody.toString();
       else {
         name = newName;
         address = newAdd;

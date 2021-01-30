@@ -97,7 +97,7 @@ class _UpdateUserInfoScreenState extends State<UpdateUserInfoScreen> {
       padding: const EdgeInsets.only(top: 20),
       child: TextFormField(
         textInputAction: TextInputAction.next,
-        focusNode: nameFocusNode,
+        focusNode: cityFocusNode,
         initialValue: city,
         onFieldSubmitted: (_) => addressFocusNode.requestFocus(),
         onSaved: (val) => _city = val.trim(),
@@ -120,7 +120,7 @@ class _UpdateUserInfoScreenState extends State<UpdateUserInfoScreen> {
       child: TextFormField(
         textInputAction: TextInputAction.next,
         initialValue: address,
-        focusNode: nameFocusNode,
+        focusNode: addressFocusNode,
         onFieldSubmitted: (_) => addressFocusNode.unfocus(),
         onSaved: (val) => _address = val.trim(),
         validator: (val) => val.isEmpty ? 'Field Can not be Left Empty' : null,
@@ -213,7 +213,7 @@ class _UpdateUserInfoScreenState extends State<UpdateUserInfoScreen> {
     final snackBar = SnackBar(
         behavior: SnackBarBehavior.floating,
         content: Text(
-          e,
+          'Error + $e',
           textAlign: TextAlign.center,
           style: TextStyle(),
         ));
