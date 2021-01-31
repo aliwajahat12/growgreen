@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:growgreen/Models/User.dart';
 import 'package:growgreen/Screens/UpdateUserInfoScreen.dart';
-import 'package:growgreen/widgets/profilepage/semiCircle.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 

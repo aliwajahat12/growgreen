@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:growgreen/Models/Leaderboard.dart';
 import 'package:growgreen/widgets/leaderboard/LeadersCircularAvatar.dart';
+import 'package:provider/provider.dart';
 
 class LeaderBoardScreen extends StatefulWidget {
   static const routeName = '/leaderboard';
@@ -10,10 +12,14 @@ class LeaderBoardScreen extends StatefulWidget {
 
 class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
   bool thisWeek = true;
+  List<LeaderboardItem> weekly = [];
+  List<LeaderboardItem> overall = [];
+  List<LeaderboardItem> toShow = [];
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
+    final leaderboard = Provider.of<Leaderboard>(context, listen: false);
 
     Widget switchWeekAlltime() {
       return Container(
@@ -30,6 +36,7 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
                     : () {
                         setState(() {
                           thisWeek = true;
+                          // toShow = overall;
                         });
                       },
                 child: Text(
@@ -53,10 +60,11 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
               child: RaisedButton(
                 elevation: 0,
                 onPressed: !thisWeek
-                    ? null
+                    ? () {}
                     : () {
                         setState(() {
                           thisWeek = false;
+                          // toShow = weekly;
                         });
                       },
                 child: Text(
@@ -129,6 +137,21 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
 
     Future<void> getLeaderboard(bool thisWeek) async {
       print('This Week $thisWeek');
+      if (overall.isEmpty && weekly.isEmpty) {
+        final receivedLeaderboard = await leaderboard.getleaderboard();
+        overall = receivedLeaderboard['overall'];
+        weekly = receivedLeaderboard['weekly'];
+      }
+      overall.forEach((e) {
+        print('${e.totalCredits} ${e.userData.name} ${e.userData.imageUrl}');
+      });
+      print('Overall $overall');
+      print('Weekly $weekly');
+      if (thisWeek)
+        toShow = weekly;
+      else {
+        toShow = overall;
+      }
     }
 
     return Scaffold(
@@ -165,71 +188,110 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
                     child: CircularProgressIndicator(),
                   );
                 } else {
-                  return Column(
-                    children: [
-                      Container(
-                        height: size.height * 0.25,
-                        width: size.width,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                  return toShow.length < 1
+                      ? Center(
+                          child: Text(
+                          'No LeaderBoard To Show',
+                          style: TextStyle(color: Colors.white),
+                        ))
+                      : Column(
                           children: [
+                            //2nd position
                             Container(
-                              width: size.width * 0.3,
-                              padding: const EdgeInsets.only(
-                                  top: 15.0, left: 5, right: 5),
-                              child: LeadersCircularAvatar(
-                                name: 'Rohaan Khan',
-                                position: '2',
-                                score: '120',
-                                width: size.width / 4,
+                              height: size.height * 0.25,
+                              width: size.width,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  if (toShow.length > 1)
+                                    Container(
+                                      width: size.width * 0.3,
+                                      padding: const EdgeInsets.only(
+                                          top: 15.0, left: 5, right: 5),
+                                      child: LeadersCircularAvatar(
+                                        name:
+                                            toShow[1].userData.name ?? 'Rohaan',
+                                        position: '2',
+                                        score: toShow[1]
+                                            .totalCredits
+                                            .toStringAsFixed(0),
+                                        width: size.width / 4,
+                                        imageUrl:
+                                            toShow[1].userData.imageUrl ?? '',
+                                      ),
+                                    ),
+                                  //1st position
+                                  Container(
+                                    width: size.width * 0.3,
+                                    padding: const EdgeInsets.only(
+                                        left: 5, right: 5),
+                                    child: LeadersCircularAvatar(
+                                      name: toShow[0].userData.name != null
+                                          ? toShow[0].userData.name
+                                          : 'Ali Zafar',
+                                      position: '1',
+                                      score: toShow[0]
+                                          .totalCredits
+                                          .toStringAsFixed(0),
+                                      width: size.width / 4,
+                                      imageUrl:
+                                          toShow[0].userData.imageUrl == ''
+                                              ? ''
+                                              : toShow[0].userData.imageUrl,
+                                    ),
+                                  ),
+                                  //3rd position
+                                  if (toShow.length > 2)
+                                    Container(
+                                      width: size.width * 0.3,
+                                      padding: const EdgeInsets.only(
+                                          top: 15.0, left: 5, right: 5),
+                                      child: LeadersCircularAvatar(
+                                        name: toShow[2].userData.name ??
+                                            'Atif Aslam',
+                                        position: '3',
+                                        score: toShow[2]
+                                            .totalCredits
+                                            .toStringAsFixed(0),
+                                        width: size.width / 4,
+                                        imageUrl:
+                                            toShow[2].userData.imageUrl ?? '',
+                                      ),
+                                    ),
+                                ],
                               ),
                             ),
-                            Container(
-                              width: size.width * 0.3,
-                              padding: const EdgeInsets.only(left: 5, right: 5),
-                              child: LeadersCircularAvatar(
-                                name: 'Ali Zafar',
-                                position: '1',
-                                score: '123',
-                                width: size.width / 4,
-                              ),
-                            ),
-                            Container(
-                              width: size.width * 0.3,
-                              padding: const EdgeInsets.only(
-                                  top: 15.0, left: 5, right: 5),
-                              child: LeadersCircularAvatar(
-                                name: 'Atif Aslam',
-                                position: '3',
-                                score: '110',
-                                width: size.width / 4,
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(40),
+                                      topRight: Radius.circular(40)),
+                                ),
+                                child: toShow.length < 3
+                                    ? Center(
+                                        child: Text('Get Your Name here!'),
+                                      )
+                                    : Padding(
+                                        padding: const EdgeInsets.only(top: 10),
+                                        child: ListView.builder(
+                                            itemCount: toShow.length - 3 > 0
+                                                ? toShow.length - 3
+                                                : 0,
+                                            itemBuilder: (ctx, i) => detailRow(
+                                                i + 4,
+                                                toShow[i + 3].userData.imageUrl,
+                                                toShow[i + 3].userData.name,
+
+                                                // 'https://www.pinclipart.com/picdir/middle/128-1286122_business-person-icon-clipart.png',
+                                                // 'Sharukh Khan',
+                                                60)),
+                                      ),
                               ),
                             ),
                           ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(40),
-                                topRight: Radius.circular(40)),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: ListView.builder(
-                                itemCount: 10,
-                                itemBuilder: (ctx, i) => detailRow(
-                                    i + 4,
-                                    'https://www.pinclipart.com/picdir/middle/128-1286122_business-person-icon-clipart.png',
-                                    'Sharukh Khan',
-                                    60)),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
+                        );
                 }
               },
             ),

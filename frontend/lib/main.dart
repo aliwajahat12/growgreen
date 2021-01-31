@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:growgreen/Models/Credits.dart';
+import 'package:growgreen/Models/Leaderboard.dart';
 import 'package:growgreen/Models/Places.dart';
 import 'package:growgreen/Models/Plant.dart';
 import 'package:growgreen/Models/Planted.dart';
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<Plant>(create: (_) => Plant()),
         ChangeNotifierProvider<Planted>(create: (_) => Planted()),
         ChangeNotifierProvider<Seller>(create: (_) => Seller()),
+        ChangeNotifierProvider<Leaderboard>(create: (_) => Leaderboard()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
