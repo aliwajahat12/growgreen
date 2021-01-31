@@ -27,7 +27,7 @@ class Place {
       : this.placeID = json['_id'],
         this.ownerID = json['ownerId'],
         this.isPublic = json['isPublic'],
-        this.name = json['name'],
+        this.name = json['placeName'],
         this.image = json['placeImage'],
         this.latitude = json['lat'].toDouble(),
         this.longitude = json['long'].toDouble();
@@ -43,9 +43,9 @@ class Places with ChangeNotifier {
       final responseData = jsonDecode(response.body);
       Iterable list = responseData['place'];
       _placeslist = list.map((model) => Place.fromJson(model)).toList();
-      // _placeslist.forEach((e) {
-      //   print('${e.isPublic} ${e.latitude} ${e.longitude}');
-      // });
+      _placeslist.forEach((e) {
+        print('${e.isPublic} ${e.latitude} ${e.longitude} ${e.name}');
+      });
     } catch (e) {
       print(e);
     }

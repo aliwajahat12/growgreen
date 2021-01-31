@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:growgreen/Models/Places.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:growgreen/Models/User.dart';
@@ -15,6 +16,7 @@ class PlacesListScreen extends StatelessWidget {
     PickedFile _imageFile;
     String _pickImageError;
     final ImagePicker _picker = ImagePicker();
+    final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
 
     Future<void> _onImageButtonPressed(
       ImageSource source,
@@ -103,16 +105,13 @@ class PlacesListScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           child: Image.network(
             link,
-            fit: BoxFit.contain,
+            fit: BoxFit.cover,
           ),
         ),
       );
     }
 
-    launchURL() async {
-      String homeLat = "37.3230";
-      String homeLng = "-122.0312";
-
+    launchURL(String homeLat, String homeLng) async {
       final String googleMapslocationUrl =
           "https://www.google.com/maps/search/?api=1&query=$homeLat,$homeLng";
 
@@ -126,10 +125,23 @@ class PlacesListScreen extends StatelessWidget {
       }
     }
 
-    placeSelection() {
+    // ignore: missing_return
+    Future<String> _getAddressFromLatLng(double lat, double long) async {
+      try {
+        List<Placemark> p =
+            await geolocator.placemarkFromCoordinates(lat, long);
+        Placemark place = p[0];
+        return "${place.name}, ${place.locality}, ${place.country}";
+      } catch (e) {
+        print(e);
+      }
+    }
+
+    placeSelection(Place placeItem) {
       return GestureDetector(
         onTap: () async {
-          await launchURL();
+          await launchURL(
+              placeItem.latitude.toString(), placeItem.longitude.toString());
         },
         child: Container(
           height: size.height * 0.20,
@@ -142,26 +154,39 @@ class PlacesListScreen extends StatelessWidget {
           ),
           child: Row(
             children: [
-              imagePlacer(size.height * 0.15,
-                  'https://atlas-content-cdn.pixelsquid.com/stock-images/potted-plant-flower-pot-mdm41mF-600.jpg'),
+              imagePlacer(
+                size.height * 0.15,
+                placeItem.image,
+                // 'https://atlas-content-cdn.pixelsquid.com/stock-images/potted-plant-flower-pot-mdm41mF-600.jpg'
+              ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Shadman Ground',
+                    placeItem.name,
+                    // 'Shadman Ground',
                     style: TextStyle(
                       color: Color(0xFF218754),
                       fontSize: 20,
                     ),
                   ),
-                  Text(
-                    'Block 2 Gulistan e jauhar Karach',
-                    style: TextStyle(
-                      color: Color(0xFF218754),
-                      fontSize: 12,
-                    ),
-                  ),
+                  FutureBuilder(
+                      future: _getAddressFromLatLng(
+                          placeItem.latitude, placeItem.longitude),
+                      builder: (ctx, snap) {
+                        if (snap.connectionState == ConnectionState.done) {
+                          return Text(
+                            snap.data.toString(),
+                            style: TextStyle(
+                              color: Color(0xFF218754),
+                              fontSize: 12,
+                            ),
+                          );
+                        } else {
+                          return Container();
+                        }
+                      }),
                 ],
               ),
             ],
@@ -189,20 +214,19 @@ class PlacesListScreen extends StatelessWidget {
             addNewPlaceWidget(),
             Expanded(
               child: FutureBuilder(
-                future: null,
-                // Provider.of<Places>(context, listen: false).getPlaces(
-                //   user.userID,
-                // ),
+                future: Provider.of<Places>(context, listen: false).getPlaces(
+                  user.userID,
+                ),
                 builder: (ctx, snap) {
                   if (snap.connectionState == ConnectionState.waiting) {
                     return Center(
                       child: CircularProgressIndicator(),
                     );
                   } else {
-                    // final places = snap.data as List<Place>;
+                    final places = snap.data as List<Place>;
                     return ListView.builder(
-                        itemCount: 5,
-                        itemBuilder: (ctx, i) => placeSelection());
+                        itemCount: places.length,
+                        itemBuilder: (ctx, i) => placeSelection(places[i]));
                   }
                 },
               ),
