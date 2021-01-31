@@ -142,11 +142,11 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
         overall = receivedLeaderboard['overall'];
         weekly = receivedLeaderboard['weekly'];
       }
-      overall.forEach((e) {
-        print('${e.totalCredits} ${e.userData.name} ${e.userData.imageUrl}');
-      });
-      print('Overall $overall');
-      print('Weekly $weekly');
+      // overall.forEach((e) {
+      //   print('${e.totalCredits} ${e.userData.name} ${e.userData.imageUrl}');
+      // });
+      // print('Overall $overall');
+      // print('Weekly $weekly');
       if (thisWeek)
         toShow = weekly;
       else {
