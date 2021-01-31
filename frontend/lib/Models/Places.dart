@@ -28,7 +28,7 @@ class Place {
         this.ownerID = json['ownerId'],
         this.isPublic = json['isPublic'],
         this.name = json['name'],
-        this.image = json['image'],
+        this.image = json['placeImage'],
         this.latitude = json['lat'].toDouble(),
         this.longitude = json['long'].toDouble();
 }

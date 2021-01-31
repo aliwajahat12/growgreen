@@ -5,7 +5,9 @@ class LeadersCircularAvatar extends StatelessWidget {
   final name;
   final score;
   final position;
-  LeadersCircularAvatar({this.width, this.name, this.score, this.position});
+  final imageUrl;
+  LeadersCircularAvatar(
+      {this.width, this.name, this.score, this.position, this.imageUrl});
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -20,9 +22,12 @@ class LeadersCircularAvatar extends StatelessWidget {
                 left: 5,
                 top: 5,
                 child: CircleAvatar(
+                  backgroundColor: Colors.white,
                   radius: width / 2.3,
                   backgroundImage: NetworkImage(
-                    'https://www.pinclipart.com/picdir/middle/128-1286122_business-person-icon-clipart.png',
+                    imageUrl != ''
+                        ? imageUrl
+                        : 'https://www.pinclipart.com/picdir/middle/128-1286122_business-person-icon-clipart.png',
                     // fit: BoxFit.cover,
                   ),
                 ),
@@ -47,13 +52,16 @@ class LeadersCircularAvatar extends StatelessWidget {
         Container(
           width: 35,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              color: Colors.white),
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            // color: Colors.white
+          ),
           child: Text(
             score,
             textAlign: TextAlign.center,
-            style:
-                TextStyle(color: Theme.of(context).primaryColor, fontSize: 16),
+            style: TextStyle(
+                // color: Theme.of(context).primaryColor,
+                color: Colors.white,
+                fontSize: 16),
           ),
         ),
       ],
