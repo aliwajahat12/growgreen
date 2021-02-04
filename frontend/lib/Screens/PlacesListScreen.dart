@@ -6,6 +6,8 @@ import 'package:growgreen/Models/User.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
+import 'AddNewPlaceScreen.dart';
+
 class PlacesListScreen extends StatelessWidget {
   static const routeName = '/places-list';
   @override
@@ -41,6 +43,8 @@ class PlacesListScreen extends StatelessWidget {
           await _onImageButtonPressed(ImageSource.camera);
           if (_imageFile != null) {
             print('Image Picked');
+            Navigator.of(context)
+                .pushNamed(AddNewPlaceScreen.routeName, arguments: _imageFile);
           } else {
             print('Image Not Picked. $_pickImageError');
           }
@@ -90,6 +94,7 @@ class PlacesListScreen extends StatelessWidget {
     }
 
     imagePlacer(double height, String link) {
+      print(link);
       return Container(
         height: height,
         width: height,

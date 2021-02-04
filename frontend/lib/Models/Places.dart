@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:growgreen/Models/User.dart';
+import 'package:growgreen/Models/utils.dart';
 import 'package:http/http.dart' as http;
 
 class Place {
@@ -43,12 +45,38 @@ class Places with ChangeNotifier {
       final responseData = jsonDecode(response.body);
       Iterable list = responseData['place'];
       _placeslist = list.map((model) => Place.fromJson(model)).toList();
-      _placeslist.forEach((e) {
-        print('${e.isPublic} ${e.latitude} ${e.longitude} ${e.name}');
-      });
+      // _placeslist.forEach((e) {
+      //   print('${e.isPublic} ${e.latitude} ${e.longitude} ${e.name}');
+      // });
     } catch (e) {
       print(e);
     }
     return [..._placeslist];
+  }
+
+  Future<String> addPlace(
+      File imageFile, String id, Map<String, dynamic> data) async {
+    String msg = '';
+    try {
+      final imageUrl = await addImage(imageFile, id);
+      print(data);
+      final response = await http.post(backendLink + 'place/', body: {
+        'ownerId': data['ownerId'],
+        'isPublic': data['isPublic'].toString(),
+        'lat': data['lat'].toString(),
+        'long': data['long'].toString(),
+        'placeName': data['placeName'],
+        'placeImage': backendLinkImage + imageUrl,
+        // 'placeImage': '/media/image-upload-1612102786024.jpg'
+      });
+      print('Returned From Post');
+      final responseBody = jsonDecode(response.body);
+      print(responseBody);
+    } catch (e) {
+      msg = e.toString();
+      print('Error Returned: $e');
+    }
+
+    return msg;
   }
 }

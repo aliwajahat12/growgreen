@@ -133,7 +133,7 @@ class _CameraScreenState extends State<CameraScreen> {
       _currentPosition = position;
       print(_currentPosition);
       // });
-      _getAddressFromLatLng();
+      await _getAddressFromLatLng();
     } catch (e) {
       print(e);
     }
