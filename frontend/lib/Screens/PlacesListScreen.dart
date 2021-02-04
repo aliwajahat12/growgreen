@@ -94,7 +94,7 @@ class PlacesListScreen extends StatelessWidget {
     }
 
     imagePlacer(double height, String link) {
-      print(link);
+      // print(link);
       return Container(
         height: height,
         width: height,
@@ -219,7 +219,7 @@ class PlacesListScreen extends StatelessWidget {
             addNewPlaceWidget(),
             Expanded(
               child: FutureBuilder(
-                future: Provider.of<Places>(context, listen: false).getPlaces(
+                future: Provider.of<Places>(context).getPlaces(
                   user.userID,
                 ),
                 builder: (ctx, snap) {

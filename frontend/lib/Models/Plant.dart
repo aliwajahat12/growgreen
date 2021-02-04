@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:growgreen/Models/utils.dart';
 
 class Plant with ChangeNotifier {
   String plantID;
@@ -24,7 +22,7 @@ class Plant with ChangeNotifier {
         this.growthRequirements = json['growthRequirements'],
         this.credits = json['credits'];
 
-  Future<void> addPlace(File imageFile, String id) async {
-    final response = await addImage(imageFile, id);
-  }
+  // Future<void> addPlace(File imageFile, String id) async {
+  //   final response = await addImage(imageFile, id);
+  // }
 }

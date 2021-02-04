@@ -2,23 +2,25 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:growgreen/Models/Places.dart';
+import 'package:growgreen/Models/Planted.dart';
 import 'package:growgreen/Models/User.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-class AddNewPlaceScreen extends StatefulWidget {
-  static const routeName = '/add-place';
+import '../SuccessMessageDialog.dart';
+
+class AddNewPlantScreen extends StatefulWidget {
+  static const routeName = '/add-plant';
   @override
-  _AddNewPlaceScreenState createState() => _AddNewPlaceScreenState();
+  _AddNewPlantScreenState createState() => _AddNewPlantScreenState();
 }
 
-class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
+class _AddNewPlantScreenState extends State<AddNewPlantScreen> {
   FocusNode nameFocusNode;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formkey = GlobalKey<FormState>();
   // ignore: unused_field
-  String _name;
+  String _nickname;
   bool _isLoading = false;
   Position _currentPosition;
   String _currentAddress = '';
@@ -38,22 +40,55 @@ class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
     super.dispose();
   }
 
-  void _submit(PickedFile imageFile, String userID) async {
-    nameFocusNode.unfocus();
+  Future<void> confirmationDialogBox(
+      PickedFile imageFile, String userID) async {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => Dialog(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+        child: Container(
+          height: 400.0,
+          width: 300.0,
+          child: FutureBuilder(
+              future: _submit(imageFile, userID),
+              builder: (ctx, snap) {
+                if (snap.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else {
+                  final msg = snap.data as String ?? 'Error';
+                  // final msg = 'abc';
+                  if (msg == '') {
+                    return successMessage(context, 'Your Plant Has Been Added');
+                  } else {
+                    return errorMsg(context, msg);
+                  }
+                }
+              }),
+        ),
+      ),
+    );
+  }
 
+  Future<String> _submit(PickedFile imageFile, String userID) async {
+    nameFocusNode.unfocus();
+    String msg;
     final form = _formkey.currentState;
     if (form.validate()) {
       form.save();
 
-      var msg = await addPlace(imageFile, userID);
-      if (msg == '') {
-        // if (!isLogin) {
-        Navigator.of(context).pop();
-      } else {
-        print('Invalid Entry');
-        _failSnackbar(msg);
-      }
+      msg = await addPlanted(imageFile, userID);
+      // if (msg == '') {
+      //   Navigator.of(context).pop();
+    } else {
+      print('Invalid Entry');
+      _failSnackbar(msg);
+      // }
     }
+    return msg;
   }
 
   void _handleRadioValueChange1(int value) {
@@ -122,7 +157,7 @@ class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
         focusNode: nameFocusNode,
         // initialValue: name,
         onFieldSubmitted: (_) => nameFocusNode.unfocus(),
-        onSaved: (val) => _name = val.trim(),
+        onSaved: (val) => _nickname = val.trim(),
         validator: (val) => val.isEmpty ? 'Field Can not be Left Empty' : null,
         keyboardType: TextInputType.name,
         decoration: InputDecoration(
@@ -172,8 +207,9 @@ class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
                   width: MediaQuery.of(context).size.width * 0.5,
                   height: 55,
                   child: RaisedButton(
-                    onPressed: () {
-                      _submit(imageFile, userID);
+                    onPressed: () async {
+                      await confirmationDialogBox(imageFile, userID);
+                      // _submit(imageFile, userID);
                     },
                     child: Text(
                       'Submit',
@@ -207,20 +243,22 @@ class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
-  Future<String> addPlace(PickedFile imageFile, String userID) async {
+  Future<String> addPlanted(PickedFile imageFile, String userID) async {
     var msg = '';
     setState(() {
       _isLoading = true;
     });
+
     final data = {
-      'placeName': _name,
-      'isPublic': isPublic,
+      'nickname': _nickname,
       'long': _currentPosition.longitude,
       'lat': _currentPosition.latitude,
-      'ownerId': userID,
+      'userId': userID,
+      'plantId': '_plantId',
+      'credits': 100,
     };
-    msg = await Provider.of<Places>(context, listen: false)
-        .addPlace(File(imageFile.path), userID, data);
+    msg = await Provider.of<Planteds>(context, listen: false)
+        .addUserPlant(File(imageFile.path), userID, data);
 
     setState(() {
       _isLoading = false;
