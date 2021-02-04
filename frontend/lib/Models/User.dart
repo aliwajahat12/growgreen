@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 const backendLink = 'http://10.0.2.2:3000/api/';
+const backendLinkImage = 'http://10.0.2.2:3000/';
 
 class User with ChangeNotifier {
   String userID;

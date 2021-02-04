@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:growgreen/Models/Plant.dart';
-import 'package:growgreen/Models/User.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:provider/provider.dart';
+
+import 'AddNewPlant.dart';
 
 class CameraScreen extends StatefulWidget {
   static const routeName = '/camera-screen';
@@ -133,7 +132,7 @@ class _CameraScreenState extends State<CameraScreen> {
       _currentPosition = position;
       print(_currentPosition);
       // });
-      _getAddressFromLatLng();
+      await _getAddressFromLatLng();
     } catch (e) {
       print(e);
     }
@@ -220,10 +219,14 @@ class _CameraScreenState extends State<CameraScreen> {
               Spacer(),
               IconButton(
                 onPressed: () async {
-                  print('Going In Func');
-                  await Provider.of<Plant>(context, listen: false).addPlace(
-                      File(_imageFile.path),
-                      Provider.of<User>(context, listen: false).userID);
+                  if (i == 0) {
+                    Navigator.of(context).pushNamed(AddNewPlantScreen.routeName,
+                        arguments: _imageFile);
+                  }
+                  // print('Going In Func');
+                  // await Provider.of<Plant>(context, listen: false).addPlace(
+                  //     File(_imageFile.path),
+                  //     Provider.of<User>(context, listen: false).userID);
                   print('Return From Func');
                 },
                 icon: Icon(

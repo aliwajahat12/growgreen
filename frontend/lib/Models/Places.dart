@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:growgreen/Models/Credits.dart';
 import 'package:growgreen/Models/User.dart';
+import 'package:growgreen/Models/utils.dart';
 import 'package:http/http.dart' as http;
 
 class Place {
@@ -43,12 +46,62 @@ class Places with ChangeNotifier {
       final responseData = jsonDecode(response.body);
       Iterable list = responseData['place'];
       _placeslist = list.map((model) => Place.fromJson(model)).toList();
-      _placeslist.forEach((e) {
-        print('${e.isPublic} ${e.latitude} ${e.longitude} ${e.name}');
-      });
+      // _placeslist.forEach((e) {
+      //   print('${e.isPublic} ${e.latitude} ${e.longitude} ${e.name}');
+      // });
     } catch (e) {
       print(e);
     }
     return [..._placeslist];
+  }
+
+  Future<String> addPlace(
+      File imageFile, String id, Map<String, dynamic> data) async {
+    String msg = '';
+    try {
+      print(data['placeName']);
+      final imageUrl = await addImage(imageFile, id);
+      print(data);
+      final response = await http.post(backendLink + 'place/', body: {
+        'ownerId': data['ownerId'],
+        'isPublic': data['isPublic'].toString(),
+        'lat': data['lat'].toString(),
+        'long': data['long'].toString(),
+        'placeName': data['placeName'],
+        'placeImage': backendLinkImage + imageUrl,
+        // 'placeImage': '/media/image-upload-1612102786024.jpg'
+      });
+      print('Returned From Post');
+      final responseBody = jsonDecode(response.body);
+      print(responseBody);
+      if (responseBody['status'] == 'fail') {
+        msg = responseBody['reason'];
+      } else {
+        _placeslist.add(Place(
+            image: backendLinkImage + imageUrl,
+            ownerID: data['ownerId'],
+            placeID: responseBody['place_id'],
+            isPublic: data['isPublic'],
+            latitude: data['lat'],
+            longitude: data['long'],
+            name: data['placeName']));
+        final data1 = {
+          'userID': data['userID'],
+          // 'plantID': responseBody['plant_id'],
+          'placeID': responseBody['place_id'],
+          'credits': 100,
+          'reason':
+              'Added A New Place At Lat: ${data['lat'].toString()} Long: ${data['long'].toString()}',
+          'image': backendLinkImage + imageUrl,
+        };
+        msg = await Credits.addCredits(data1);
+      }
+    } catch (e) {
+      msg = e.toString();
+      notifyListeners();
+      print('Error Returned: $e');
+    }
+
+    return msg;
   }
 }
