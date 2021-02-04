@@ -16,10 +16,10 @@ const plantedSchema = new mongoose.Schema({
         ref: 'place',
         required: true
     },
-    images: [{
+    image: {
         type: String,
         required: true
-    }],
+    },
     date: {
         type: Date,
         default: Date.now
