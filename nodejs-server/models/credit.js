@@ -4,12 +4,28 @@ const creditSchema = new mongoose.Schema({
     plantedId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'planted',
-        required: true
+        default: null
+    },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
+        default: null
+    },
+    isRelatedToPlanted: {
+        type: Boolean,
+        default: true
     },
     credits: Number,
     reason: {
         type: String,
         default: "Routine Watering",
+    },
+    approvalStage: {
+        type: Number,
+        default: 0
+        // 0 for pending
+        // 1 for approved
+        // -1 for rejected
     },
     date: {
         type: Date,
