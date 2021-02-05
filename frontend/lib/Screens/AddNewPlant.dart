@@ -157,11 +157,14 @@ class _AddNewPlantScreenState extends State<AddNewPlantScreen> {
   }
 
   Future<void> loadPlants() async {
-    final receivedPlantsList = await Provider.of<Plant>(context).getPlantList();
-    print(receivedPlantsList);
-    setState(() {
-      _plantList = receivedPlantsList;
-    });
+    if (_plantList.isEmpty) {
+      final receivedPlantsList =
+          await Provider.of<Plant>(context, listen: false).getPlantList();
+      print(receivedPlantsList);
+      setState(() {
+        _plantList = receivedPlantsList;
+      });
+    }
   }
 
   getPlantName() {

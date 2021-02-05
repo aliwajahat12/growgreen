@@ -53,12 +53,13 @@ class Planteds with ChangeNotifier {
     try {
       final imageUrl = await addImage(imageFile, id);
       print(data);
-      final response = await http.post(backendLink + 'place/', body: {
-        'userId': data['ownerId'],
+      final response =
+          await http.post(backendLink + 'planted/${data['userId']}', body: {
+        'plantId': data['plantId'],
         'lat': data['lat'].toString(),
         'long': data['long'].toString(),
-        'nickname': data['placeName'],
-        'media': backendLinkImage + imageUrl,
+        'nickname': data['nickname'],
+        'media': data['plantPic'],
       });
       // print('Returned From Post');
       final responseBody = jsonDecode(response.body);

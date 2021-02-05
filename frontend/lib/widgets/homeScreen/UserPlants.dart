@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:growgreen/Models/Planted.dart';
 import 'package:growgreen/Screens/PlantDetailScreen.dart';
 
 class UserPlants extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    userPlantItem(double height1, double width) {
+    userPlantItem(
+      double height1,
+      double width,
+      //  Planted plantedItem
+    ) {
       return GestureDetector(
         onTap: () {
           Navigator.of(context).pushNamed(PlantDetailScreen.routeName);
@@ -26,6 +31,7 @@ class UserPlants extends StatelessWidget {
                   ),
                 ),
                 child: Image.network(
+                  // plantedItem.media,
                   'https://atlas-content-cdn.pixelsquid.com/stock-images/potted-plant-flower-pot-mdm41mF-600.jpg',
                   fit: BoxFit.contain,
                 ),
@@ -34,19 +40,35 @@ class UserPlants extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
+                    // plantedItem.nickname,
                     'Giant Sequoia',
                     style: TextStyle(
                         color: Theme.of(context).accentColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 25),
                   ),
-                  Text(
-                    'Block 2, Gulshan-e-Iqbal, Karachi',
-                    maxLines: 3,
-                    overflow: TextOverflow.clip,
-                    style: TextStyle(
-                        color: Theme.of(context).accentColor, fontSize: 12),
-                  ),
+                  FutureBuilder(
+                      future: null,
+                      builder: (ctx, snap) {
+                        // if (snap.hasData) {
+                        return Text(
+                          'Block 2, Gulshan-e-Iqbal, Karachi',
+                          maxLines: 3,
+                          overflow: TextOverflow.clip,
+                          style: TextStyle(
+                              color: Theme.of(context).accentColor,
+                              fontSize: 12),
+                        );
+                        // } else {
+                        //   return Container(
+                        //     height: 10,
+                        //     width: 10,
+                        //     child: CircularProgressIndicator(
+                        //       strokeWidth: 1,
+                        //     ),
+                        //   );
+                        // }
+                      })
                 ],
               )
             ],
@@ -65,11 +87,30 @@ class UserPlants extends StatelessWidget {
           padding: const EdgeInsets.only(
             top: 30,
           ),
-          child: ListView.builder(
-            itemCount: 3,
-            itemBuilder: (ctx, i) => userPlantItem(
-                constraints.maxHeight / 3.25, constraints.maxWidth),
-          ),
+          child: FutureBuilder(
+              future: null,
+              builder: (ctx, snap) {
+                if (snap.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else {
+                  // final userPlants = snap.data as List<Planted>;
+                  // if (userPlants == null || userPlants.isEmpty) {
+                  //   return Center(
+                  //     child: Text('No Plants Planted'),
+                  //   );
+                  // } else {
+                  return ListView.builder(
+                    itemCount: 3,
+                    itemBuilder: (ctx, i) => userPlantItem(
+                      constraints.maxHeight / 3.25,
+                      constraints.maxWidth,
+                      // userPlants[i],
+                    ),
+                  );
+                }
+              }
+              // },
+              ),
         ),
       ),
     );
