@@ -28,7 +28,8 @@ module.exports = {
         const wateringCreditsPlant = await PlantedModel.findById(
           plantedId
         ).populate("plantId");
-        newCredit.credits = wateringCreditsPlant.wateringCredits;
+        console.log(wateringCreditsPlant);
+        newCredit.credits = wateringCreditsPlant.plantId.wateringCredits;
         if(reason === null){
             newCredit.reason = "Schedule watering";
         }
