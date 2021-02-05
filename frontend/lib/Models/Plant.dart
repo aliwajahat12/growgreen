@@ -11,7 +11,7 @@ class Plant with ChangeNotifier {
   String picture;
   int wateringInterval;
   double wateringAmount;
-  int soilPh;
+  double soilPh;
   int plantingCredits;
   int wateringCredits;
 
@@ -32,7 +32,7 @@ class Plant with ChangeNotifier {
         this.picture = json['picture'],
         this.wateringInterval = json['wateringInterval'],
         this.wateringAmount = json['wateringAmount'],
-        this.soilPh = json['soilPh'],
+        this.soilPh = json['soilPh'].toDouble(),
         this.plantingCredits = json['plantingCredits'],
         this.wateringCredits = json['wateringCredits'];
 

@@ -56,7 +56,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 future: Provider.of<User>(context).getUserCredits(),
                 builder: (ctx, snap) {
                   if (snap.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
+                    return Container(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ));
                   } else {
                     return Text(
                       'Credits: ${snap.data}',
