@@ -48,15 +48,14 @@ module.exports = {
       await newPlant.save();
       const plant = await PlantModel.findById(plantId);
       const newCredit = new CreditModel({
+        userId: user_id,
         plantedId: newPlant._id,
         credits: plant.plantingCredits,
         reason: "New plant planted.",
         image: media,
+        approvalStage: 1
       });
       await newCredit.save();
-      console.log(newCredit);
-      console.log(place);
-      console.log(place[0]._id);
       res.json({ status: "success", newPlant });
     } catch (err) {
       console.log(err.message);
