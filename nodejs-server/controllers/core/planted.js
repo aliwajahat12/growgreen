@@ -48,6 +48,7 @@ module.exports = {
       await newPlant.save();
       const plant = await PlantModel.findById(plantId);
       const newCredit = new CreditModel({
+        userId: user_id,
         plantedId: newPlant._id,
         credits: plant.plantingCredits,
         reason: "New plant planted.",

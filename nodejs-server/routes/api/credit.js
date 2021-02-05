@@ -1,5 +1,5 @@
 const express = require('express');
-const { getPlantedCredits, getCreditLeaderboard, addImage } = require('../../controllers/core/credit');
+const { getPlantedCredits, getCreditLeaderboard, addCredits } = require('../../controllers/core/credit');
 
 const router = express.Router();
 
@@ -14,9 +14,9 @@ router.get("/", getCreditLeaderboard);
 router.get("/:planted_id/", getPlantedCredits);
 
 
-// @ route:     POST /api/credit/:planted_id/
+// @ route:     POST /api/credit/
 // @ desc:      posts an image of a plant and records the watering time(s) also issues regarding credits
 // @ access:    logged-in user
-router.post('/', addImage);
+router.post('/', addCredits);
 
 module.exports = router;
