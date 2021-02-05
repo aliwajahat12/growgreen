@@ -75,7 +75,8 @@ class Planteds with ChangeNotifier {
             placeID: data['placeId'],
             plantID: data['plantId'],
             nickname: data['nickname'],
-            media: backendLinkImage + imageUrl,
+            media: data['plantPic'],
+            // media: backendLinkImage + imageUrl,
           ),
         );
         Map data1 = {

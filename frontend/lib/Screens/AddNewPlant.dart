@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:growgreen/Models/Plant.dart';
 import 'package:growgreen/Models/Planted.dart';
 import 'package:growgreen/Models/User.dart';
 import 'package:image_picker/image_picker.dart';
@@ -23,10 +24,11 @@ class _AddNewPlantScreenState extends State<AddNewPlantScreen> {
   String _nickname;
   bool _isLoading = false;
   Position _currentPosition;
-  String _currentAddress = '';
+  String _currentAddress;
   final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
   bool isPublic = true;
-  int _radioPublicPrivate = 0;
+  Plant _selectedPlant;
+  List<Plant> _plantList = [];
 
   @override
   initState() {
@@ -80,7 +82,7 @@ class _AddNewPlantScreenState extends State<AddNewPlantScreen> {
     if (form.validate()) {
       form.save();
 
-      msg = await addPlanted(imageFile, userID);
+      msg = await addPlant(imageFile, userID);
       // if (msg == '') {
       //   Navigator.of(context).pop();
     } else {
@@ -89,50 +91,6 @@ class _AddNewPlantScreenState extends State<AddNewPlantScreen> {
       // }
     }
     return msg;
-  }
-
-  void _handleRadioValueChange1(int value) {
-    setState(() {
-      _radioPublicPrivate = value;
-
-      switch (_radioPublicPrivate) {
-        case 0:
-          isPublic = true;
-          break;
-        case 1:
-          isPublic = false;
-          break;
-      }
-    });
-  }
-
-  Widget _choseFromPublicPrivate() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text('Category', style: new TextStyle(fontSize: 20.0)),
-        Radio(
-          value: 0,
-          groupValue: _radioPublicPrivate,
-          onChanged: _handleRadioValueChange1,
-        ),
-        new Text(
-          'Public',
-          style: new TextStyle(fontSize: 16.0),
-        ),
-        new Radio(
-          value: 1,
-          groupValue: _radioPublicPrivate,
-          onChanged: _handleRadioValueChange1,
-        ),
-        new Text(
-          'Private',
-          style: new TextStyle(
-            fontSize: 16.0,
-          ),
-        ),
-      ],
-    );
   }
 
   Widget _displayLocation() {
@@ -163,8 +121,8 @@ class _AddNewPlantScreenState extends State<AddNewPlantScreen> {
         decoration: InputDecoration(
           border: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(20))),
-          labelText: 'Place Name',
-          hintText: 'Enter Place Name',
+          labelText: 'Enter Plant Nickname',
+          hintText: 'Enter nickname',
         ),
       ),
     );
@@ -175,7 +133,9 @@ class _AddNewPlantScreenState extends State<AddNewPlantScreen> {
       List<Placemark> p = await geolocator.placemarkFromCoordinates(
           _currentPosition.latitude, _currentPosition.longitude);
       Placemark place = p[0];
-      _currentAddress = "${place.name}, ${place.locality}, ${place.country}";
+      setState(() {
+        _currentAddress = "${place.name}, ${place.locality}, ${place.country}";
+      });
     } catch (e) {
       print(e);
     }
@@ -196,9 +156,46 @@ class _AddNewPlantScreenState extends State<AddNewPlantScreen> {
     }
   }
 
+  Future<void> loadPlants() async {
+    final receivedPlantsList = await Provider.of<Plant>(context).getPlantList();
+    print(receivedPlantsList);
+    setState(() {
+      _plantList = receivedPlantsList;
+    });
+  }
+
+  getPlantName() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 15.0),
+      child: _plantList.isEmpty
+          ? CircularProgressIndicator()
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(_selectedPlant == null
+                    ? 'Select Plant'
+                    : _selectedPlant.name),
+                DropdownButton<Plant>(
+                  items: _plantList.map((e) {
+                    return new DropdownMenuItem<Plant>(
+                      value: e,
+                      child: Text(e.name),
+                    );
+                  }).toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      _selectedPlant = val;
+                    });
+                  },
+                ),
+              ],
+            ),
+    );
+  }
+
   Widget _formActionButton(PickedFile imageFile, String userID) {
     return Padding(
-      padding: EdgeInsets.only(top: 40),
+      padding: EdgeInsets.only(top: 20),
       child: _isLoading
           ? CircularProgressIndicator()
           : Column(
@@ -243,7 +240,7 @@ class _AddNewPlantScreenState extends State<AddNewPlantScreen> {
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
-  Future<String> addPlanted(PickedFile imageFile, String userID) async {
+  Future<String> addPlant(PickedFile imageFile, String userID) async {
     var msg = '';
     setState(() {
       _isLoading = true;
@@ -254,8 +251,9 @@ class _AddNewPlantScreenState extends State<AddNewPlantScreen> {
       'long': _currentPosition.longitude,
       'lat': _currentPosition.latitude,
       'userId': userID,
-      'plantId': '_plantId',
-      'credits': 100,
+      'plantId': _selectedPlant.plantID,
+      'credits': _selectedPlant.plantingCredits,
+      'plantPic': _selectedPlant.picture,
     };
     msg = await Provider.of<Planteds>(context, listen: false)
         .addUserPlant(File(imageFile.path), userID, data);
@@ -289,6 +287,7 @@ class _AddNewPlantScreenState extends State<AddNewPlantScreen> {
           : null;
     }
 
+    loadPlants();
     return SafeArea(
       child: Scaffold(
         key: _scaffoldKey,
@@ -308,20 +307,25 @@ class _AddNewPlantScreenState extends State<AddNewPlantScreen> {
             children: [
               _previewImage(),
               _displayLocation(),
-              _choseFromPublicPrivate(),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                child: Center(
-                  child: SingleChildScrollView(
-                    child: Form(
-                      key: _formkey,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _namefield(),
-                          _formActionButton(imageFile, userInfo.userID),
-                        ],
+                child: GestureDetector(
+                  onTap: () {
+                    nameFocusNode.unfocus();
+                  },
+                  child: Center(
+                    child: SingleChildScrollView(
+                      child: Form(
+                        key: _formkey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _namefield(),
+                            getPlantName(),
+                            _formActionButton(imageFile, userInfo.userID),
+                          ],
+                        ),
                       ),
                     ),
                   ),
