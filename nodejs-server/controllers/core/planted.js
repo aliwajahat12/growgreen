@@ -11,7 +11,7 @@ module.exports = {
     try {
       const { user_id } = req.params;
       const plants_by_user = await PlantedModel.find({
-        userId: mongoose.Schema.Types.ObjectId(user_id),
+        userId: mongoose.Types.ObjectId(user_id),
       });
       res.json({ planted_details: plants_by_user });
     } catch (err) {
