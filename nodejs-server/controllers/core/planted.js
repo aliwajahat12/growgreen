@@ -12,7 +12,7 @@ module.exports = {
       const { user_id } = req.params;
       const plants_by_user = await PlantedModel.find({
         userId: mongoose.Types.ObjectId(user_id),
-      });
+      }).populate("plantId");
       res.json({ planted_details: plants_by_user });
     } catch (err) {
       console.error("Error: " + err.message);
@@ -53,7 +53,7 @@ module.exports = {
         credits: plant.plantingCredits,
         reason: "New plant planted.",
         image: media,
-        approvalStage: 1
+        approvalStage: 1,
       });
       await newCredit.save();
       res.json({ status: "success", newPlant });

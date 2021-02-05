@@ -16,7 +16,6 @@ module.exports = {
         reason,
       } = req.body;
       const newCredit = new CreditModel({
-        plantedId: mongoose.Types.ObjectId(plantedId),
         userId: mongoose.Types.ObjectId(userId),
         isRelatedToPlanted: isRelatedToPlanted,
         credits: credits,
@@ -25,6 +24,7 @@ module.exports = {
         reason: reason,
       });
       if (isRelatedToPlanted) {
+          newCredit.plantId = mongoose.Types.ObjectId(plantedId);
         const wateringCreditsPlant = await PlantedModel.findById(
           plantedId
         ).populate("plantId");
