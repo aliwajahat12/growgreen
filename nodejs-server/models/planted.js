@@ -6,6 +6,10 @@ const plantedSchema = new mongoose.Schema({
         ref: 'user',
         required: true
     },
+    nickname: {
+        type: String,
+        required: true
+    },
     plantId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'plant',
