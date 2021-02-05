@@ -11,6 +11,6 @@ router.get("/:user_id/", getPlanted);
 // @ route:     POST /api/planted
 // @ desc:      Adds a new plant
 // @ access:    logged in user can add his/her own plants
-router.post('/:user_id', newPlant);
+router.post('/:user_id/', newPlant);
 
 module.exports = router;
