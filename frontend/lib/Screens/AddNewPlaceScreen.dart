@@ -7,6 +7,8 @@ import 'package:growgreen/Models/User.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/SuccessMessageDialog.dart';
+
 class AddNewPlaceScreen extends StatefulWidget {
   static const routeName = '/add-place';
   @override
@@ -24,7 +26,7 @@ class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
   String _currentAddress = '';
   final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
   bool isPublic = true;
-  int _radioPublicPrivate = 0;
+  // int _radioPublicPrivate = 0;
 
   @override
   initState() {
@@ -38,67 +40,69 @@ class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
     super.dispose();
   }
 
-  void _submit(PickedFile imageFile, String userID) async {
-    nameFocusNode.unfocus();
-
+  Future<String> _submit(PickedFile imageFile, String userID) async {
+    print('In Submit');
+    // nameFocusNode.unfocus();
+    var msg = '';
     final form = _formkey.currentState;
-    if (form.validate()) {
-      form.save();
+    // if (form.validate()) {
+    form.save();
 
-      var msg = await addPlace(imageFile, userID);
-      if (msg == '') {
-        // if (!isLogin) {
-        Navigator.of(context).pop();
-      } else {
-        print('Invalid Entry');
-        _failSnackbar(msg);
-      }
-    }
+    msg = await addPlace(imageFile, userID);
+    // if (msg == '') {
+    //   // if (!isLogin) {
+    //   Navigator.of(context).pop();
+    // } else {
+    // msg = 'Form Incomplete';
+    // print('Invalid Entry');
+    // _failSnackbar(msg);
+    // }
+    return msg;
   }
 
-  void _handleRadioValueChange1(int value) {
-    setState(() {
-      _radioPublicPrivate = value;
+  // void _handleRadioValueChange1(int value) {
+  //   setState(() {
+  //     _radioPublicPrivate = value;
 
-      switch (_radioPublicPrivate) {
-        case 0:
-          isPublic = true;
-          break;
-        case 1:
-          isPublic = false;
-          break;
-      }
-    });
-  }
+  //     switch (_radioPublicPrivate) {
+  //       case 0:
+  //         isPublic = true;
+  //         break;
+  //       case 1:
+  //         isPublic = false;
+  //         break;
+  //     }
+  //   });
+  // }
 
-  Widget _choseFromPublicPrivate() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text('Category', style: new TextStyle(fontSize: 20.0)),
-        Radio(
-          value: 0,
-          groupValue: _radioPublicPrivate,
-          onChanged: _handleRadioValueChange1,
-        ),
-        new Text(
-          'Public',
-          style: new TextStyle(fontSize: 16.0),
-        ),
-        new Radio(
-          value: 1,
-          groupValue: _radioPublicPrivate,
-          onChanged: _handleRadioValueChange1,
-        ),
-        new Text(
-          'Private',
-          style: new TextStyle(
-            fontSize: 16.0,
-          ),
-        ),
-      ],
-    );
-  }
+  // Widget _choseFromPublicPrivate() {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.center,
+  //     children: <Widget>[
+  //       Text('Category', style: new TextStyle(fontSize: 20.0)),
+  //       Radio(
+  //         value: 0,
+  //         groupValue: _radioPublicPrivate,
+  //         onChanged: _handleRadioValueChange1,
+  //       ),
+  //       new Text(
+  //         'Public',
+  //         style: new TextStyle(fontSize: 16.0),
+  //       ),
+  //       new Radio(
+  //         value: 1,
+  //         groupValue: _radioPublicPrivate,
+  //         onChanged: _handleRadioValueChange1,
+  //       ),
+  //       new Text(
+  //         'Private',
+  //         style: new TextStyle(
+  //           fontSize: 16.0,
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _displayLocation() {
     return Padding(
@@ -172,8 +176,8 @@ class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
                   width: MediaQuery.of(context).size.width * 0.5,
                   height: 55,
                   child: RaisedButton(
-                    onPressed: () {
-                      _submit(imageFile, userID);
+                    onPressed: () async {
+                      await confirmationDialogBox(imageFile, userID);
                     },
                     child: Text(
                       'Submit',
@@ -196,25 +200,25 @@ class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
     );
   }
 
-  void _failSnackbar(String e) {
-    final snackBar = SnackBar(
-        behavior: SnackBarBehavior.floating,
-        content: Text(
-          'Error + $e',
-          textAlign: TextAlign.center,
-          style: TextStyle(),
-        ));
-    _scaffoldKey.currentState.showSnackBar(snackBar);
-  }
+  // void _failSnackbar(String e) {
+  //   final snackBar = SnackBar(
+  //       behavior: SnackBarBehavior.floating,
+  //       content: Text(
+  //         'Error + $e',
+  //         textAlign: TextAlign.center,
+  //         style: TextStyle(),
+  //       ));
+  //   _scaffoldKey.currentState.showSnackBar(snackBar);
+  // }
 
   Future<String> addPlace(PickedFile imageFile, String userID) async {
     var msg = '';
-    setState(() {
-      _isLoading = true;
-    });
+    // setState(() {
+    //   _isLoading = true;
+    // });
     final data = {
       'placeName': _name,
-      'isPublic': isPublic,
+      'isPublic': true,
       'long': _currentPosition.longitude,
       'lat': _currentPosition.latitude,
       'ownerId': userID,
@@ -222,10 +226,45 @@ class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
     msg = await Provider.of<Places>(context, listen: false)
         .addPlace(File(imageFile.path), userID, data);
 
-    setState(() {
-      _isLoading = false;
-    });
+    // setState(() {
+    //   _isLoading = false;
+    // });
     return msg;
+  }
+
+  Future<void> confirmationDialogBox(
+      PickedFile imageFile, String userID) async {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => Dialog(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+        child: Container(
+          height: 400.0,
+          width: 300.0,
+          child: FutureBuilder(
+              future: _submit(imageFile, userID),
+              builder: (ctx, snap) {
+                if (snap.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else {
+                  print('Snap Data ${snap.data}');
+                  final msg = snap.data as String ?? 'Error';
+                  // final msg = 'abc';
+                  if (msg == '') {
+                    return successMessage(context,
+                        'Your Place Has Been Recorded, Keep Up The Good Work!');
+                  } else {
+                    return errorMsg(context, msg);
+                  }
+                }
+              }),
+        ),
+      ),
+    );
   }
 
   @override
@@ -270,7 +309,7 @@ class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
             children: [
               _previewImage(),
               _displayLocation(),
-              _choseFromPublicPrivate(),
+              // _choseFromPublicPrivate(),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './Screens/HomeScreen.dart';
+import '../Screens/HomeScreen.dart';
 
 Widget successMessage(context, String msg) {
   return Column(

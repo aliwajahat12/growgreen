@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:growgreen/Models/Credits.dart';
+// import 'package:growgreen/Models/Credits.dart';
 import 'package:growgreen/Models/User.dart';
 import 'package:growgreen/Models/utils.dart';
 import 'package:http/http.dart' as http;
@@ -37,7 +37,7 @@ class Place {
 }
 
 class Places with ChangeNotifier {
-  List<Place> _placeslist;
+  List<Place> _placeslist = [];
 
   Future<List<Place>> getPlaces(String userID) async {
     _placeslist = [];
@@ -64,7 +64,7 @@ class Places with ChangeNotifier {
       print(data);
       final response = await http.post(backendLink + 'place/', body: {
         'ownerId': data['ownerId'],
-        'isPublic': data['isPublic'].toString(),
+        'isPublic': true.toString(),
         'lat': data['lat'].toString(),
         'long': data['long'].toString(),
         'placeName': data['placeName'],
@@ -77,30 +77,34 @@ class Places with ChangeNotifier {
       if (responseBody['status'] == 'fail') {
         msg = responseBody['reason'];
       } else {
-        _placeslist.add(Place(
+        Place newPlace = Place(
             image: backendLinkImage + imageUrl,
             ownerID: data['ownerId'],
             placeID: responseBody['place_id'],
             isPublic: data['isPublic'],
             latitude: data['lat'],
             longitude: data['long'],
-            name: data['placeName']));
+            name: data['placeName']);
+        print('Going To Add Place Locallly');
+        _placeslist.add(newPlace);
+        print('Place Added Locally');
         final data1 = {
-          'userID': data['userID'],
+          'userId': data['userID'],
           // 'plantID': responseBody['plant_id'],
           'placeID': responseBody['place_id'],
-          'credits': 100,
+          'credits': 300,
+          'isRelatedToPlanted': false,
           'reason':
               'Added A New Place At Lat: ${data['lat'].toString()} Long: ${data['long'].toString()}',
           'image': backendLinkImage + imageUrl,
         };
-        msg = await Credits.addCredits(data1);
+        // msg = await Credits.addCredits(data1);
       }
     } catch (e) {
       msg = e.toString();
-      notifyListeners();
       print('Error Returned: $e');
     }
+    notifyListeners();
 
     return msg;
   }

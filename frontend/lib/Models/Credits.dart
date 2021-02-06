@@ -37,18 +37,20 @@ class Credits with ChangeNotifier {
     // final imageUrl = await addImage(imageFile, data['userID']);
     try {
       print(data);
+      print(backendLink + 'credit/');
       final response = await http.post(
-        backendLink + 'credits/',
+        backendLink + 'credit/',
         body: {
-          'userID': data['userID'],
-          'plantID': data['plantID'],
-          'placeID': data['placeID'],
-          'credits': data['credits'],
+          'userId': data['userID'],
+          'plantId': data['plantID'],
+          'isRelatedToPlanted': data['isRelatedToPlanted'].toString(),
+          'credits': data['credits'].toString(),
           'reason': data['reason'],
           'image': data['image'],
-          'date': DateTime.now(),
+          'date': DateTime.now().toIso8601String(),
         },
       );
+      print('Return From Credits Post Req');
       final responseBody = jsonDecode(response.body);
       print(responseBody);
       if (responseBody['status'] == 'fail') {

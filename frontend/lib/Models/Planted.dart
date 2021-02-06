@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:growgreen/Models/Credits.dart';
 import 'package:growgreen/Models/utils.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 import 'User.dart';
 
@@ -16,20 +17,21 @@ class Planted {
   String nickname;
   String latitude;
   String longitude;
-  String media;
+  String image;
   DateTime date;
+  String plantName;
 
-  Planted({
-    this.plantedID,
-    this.userID,
-    this.plantID,
-    this.placeID,
-    this.nickname,
-    this.latitude,
-    this.longitude,
-    this.media,
-    this.date,
-  });
+  Planted(
+      {this.plantedID,
+      this.userID,
+      this.plantID,
+      this.placeID,
+      this.nickname,
+      this.latitude,
+      this.longitude,
+      this.image,
+      this.date,
+      this.plantName});
 
   Planted.fromJson(Map<String, dynamic> json)
       : this.userID = json['userID'],
@@ -39,9 +41,12 @@ class Planted {
         this.nickname = json['nickname'],
         this.latitude = json['latitude'],
         this.longitude = json['longitude'],
-        this.media = json['media'],
-        // this.media = List.from(json['media']),
-        this.date = json['date'].toDate();
+        this.image = json['image'],
+        this.plantName = json['plantId']['name'],
+        // this.image = List.from(json['image']),
+        this.date = DateFormat("yyyy-MM-ddTHH:mm:ssZ")
+            .parse(json['date'], true)
+            .toLocal();
 }
 
 class Planteds with ChangeNotifier {
@@ -67,29 +72,33 @@ class Planteds with ChangeNotifier {
       if (responseBody['status'] == 'fail') {
         msg = responseBody['reason'];
       } else {
+        final newPlant = responseBody['newPlant'];
         _plantedList.add(
           Planted(
-            plantedID: responseBody['planted_id'],
+            plantedID: newPlant['_id'],
             userID: data['userId'],
-            latitude: data['lat'],
-            longitude: data['long'],
+            latitude: data['lat'].toString(),
+            longitude: data['long'].toString(),
             placeID: data['placeId'],
             plantID: data['plantId'],
             nickname: data['nickname'],
-            media: data['plantPic'],
-            // media: backendLinkImage + imageUrl,
+            image: data['plantPic'],
+            // image: backendLinkImage + imageUrl,
           ),
         );
-        Map data1 = {
+        Map<String, dynamic> data1 = {
           'userID': data['userId'],
-          'plantID': responseBody['plantId'],
-          'placeID': responseBody['place_id'],
+          // 'plantID': data['plantId'],
+          'plantedId': newPlant['_id'],
+          'placeID': newPlant['placeId'],
           'credits': data['credits'],
+          'isRelatedToPlanted': true,
           'reason':
-              'Added A New Place At Lat: ${data['lat'].toString()} Long: ${data['long'].toString()}',
+              'Added A New Plant At Lat: ${data['lat'].toString()} Long: ${data['long'].toString()}',
           'image': backendLinkImage + imageUrl,
         };
-        msg = await Credits.addCredits(data1);
+        print('Data1 $data1');
+        // msg = await Credits.addCredits(data1);
       }
     } catch (e) {
       msg = e.toString();
@@ -101,13 +110,21 @@ class Planteds with ChangeNotifier {
 
   Future<List<Planted>> getPlanted(String userID) async {
     _plantedList = [];
-    try {
-      final response = await http.get(backendLink + 'planted/$userID');
-      final responseData = jsonDecode(response.body);
-      Iterable list = responseData['planted'];
-      _plantedList = list.map((model) => Planted.fromJson(model)).toList();
-    } catch (e) {
-      print(e);
+    if (_plantedList.isEmpty) {
+      try {
+        print(userID);
+        final response = await http.get(backendLink + 'planted/$userID');
+        final responseData = jsonDecode(response.body);
+        // print(responseData);
+        Iterable list = responseData['planted_details'];
+        _plantedList = list.map((model) => Planted.fromJson(model)).toList();
+      } catch (e) {
+        print(e);
+      }
+      // _plantedList.forEach((e) {
+      //   print(e.plantedID + e.image);
+      // });
+      // print(_plantedList);
     }
     return [..._plantedList];
   }

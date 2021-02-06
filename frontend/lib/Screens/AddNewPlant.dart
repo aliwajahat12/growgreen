@@ -8,7 +8,7 @@ import 'package:growgreen/Models/User.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import '../SuccessMessageDialog.dart';
+import '../widgets/SuccessMessageDialog.dart';
 
 class AddNewPlantScreen extends StatefulWidget {
   static const routeName = '/add-plant';
@@ -54,17 +54,19 @@ class _AddNewPlantScreenState extends State<AddNewPlantScreen> {
           height: 400.0,
           width: 300.0,
           child: FutureBuilder(
-              future: _submit(imageFile, userID),
+              future: _submitNewPlace(imageFile, userID),
               builder: (ctx, snap) {
                 if (snap.connectionState == ConnectionState.waiting) {
                   return Center(
                     child: CircularProgressIndicator(),
                   );
                 } else {
+                  print('Snap Data ${snap.data}');
                   final msg = snap.data as String ?? 'Error';
                   // final msg = 'abc';
                   if (msg == '') {
-                    return successMessage(context, 'Your Plant Has Been Added');
+                    return successMessage(context,
+                        'Your Plantation Has Been Recorded, Keep Up The Good Work!');
                   } else {
                     return errorMsg(context, msg);
                   }
@@ -75,21 +77,27 @@ class _AddNewPlantScreenState extends State<AddNewPlantScreen> {
     );
   }
 
-  Future<String> _submit(PickedFile imageFile, String userID) async {
-    nameFocusNode.unfocus();
-    String msg;
+  Future<String> _submitNewPlace(PickedFile imageFile, String userID) async {
+    // nameFocusNode.unfocus();
+    print('In Func');
+    String msg = '';
+    print('In Submit');
     final form = _formkey.currentState;
-    if (form.validate()) {
-      form.save();
+    print('Form');
+    // if (form.validate()) {
+    print('Form Validated');
+    form.save();
 
-      msg = await addPlant(imageFile, userID);
-      // if (msg == '') {
-      //   Navigator.of(context).pop();
-    } else {
-      print('Invalid Entry');
-      _failSnackbar(msg);
-      // }
-    }
+    msg = await addPlant(imageFile, userID);
+    // if (msg == '') {
+    //   Navigator.of(context).pop();
+    // } else {
+    // msg = 'Form Not Validated';
+    // print('Invalid Entry');
+    // _failSnackbar(msg);
+    // }
+    // }
+    print('Returning $msg');
     return msg;
   }
 
@@ -116,7 +124,7 @@ class _AddNewPlantScreenState extends State<AddNewPlantScreen> {
         // initialValue: name,
         onFieldSubmitted: (_) => nameFocusNode.unfocus(),
         onSaved: (val) => _nickname = val.trim(),
-        validator: (val) => val.isEmpty ? 'Field Can not be Left Empty' : null,
+        // validator: (val) => val.isEmpty ? 'Field Can not be Left Empty' : null,
         keyboardType: TextInputType.name,
         decoration: InputDecoration(
           border: OutlineInputBorder(
@@ -208,6 +216,7 @@ class _AddNewPlantScreenState extends State<AddNewPlantScreen> {
                   height: 55,
                   child: RaisedButton(
                     onPressed: () async {
+                      nameFocusNode.unfocus();
                       await confirmationDialogBox(imageFile, userID);
                       // _submit(imageFile, userID);
                     },
@@ -232,22 +241,28 @@ class _AddNewPlantScreenState extends State<AddNewPlantScreen> {
     );
   }
 
-  void _failSnackbar(String e) {
-    final snackBar = SnackBar(
-        behavior: SnackBarBehavior.floating,
-        content: Text(
-          'Error + $e',
-          textAlign: TextAlign.center,
-          style: TextStyle(),
-        ));
-    _scaffoldKey.currentState.showSnackBar(snackBar);
-  }
+  // void _failSnackbar(String e) {
+  //   final snackBar = SnackBar(
+  //       behavior: SnackBarBehavior.floating,
+  //       content: Text(
+  //         'Error + $e',
+  //         textAlign: TextAlign.center,
+  //         style: TextStyle(),
+  //       ));
+  //   _scaffoldKey.currentState.showSnackBar(snackBar);
+  // }
 
   Future<String> addPlant(PickedFile imageFile, String userID) async {
     var msg = '';
-    setState(() {
-      _isLoading = true;
-    });
+    print('In Add Plant');
+    // setState(() {
+    //   _isLoading = true;
+    // });
+
+    if (_selectedPlant == null) {
+      msg = 'Please Select Plant';
+      return msg;
+    }
 
     final data = {
       'nickname': _nickname,
@@ -260,10 +275,11 @@ class _AddNewPlantScreenState extends State<AddNewPlantScreen> {
     };
     msg = await Provider.of<Planteds>(context, listen: false)
         .addUserPlant(File(imageFile.path), userID, data);
+    print('Return $msg');
 
-    setState(() {
-      _isLoading = false;
-    });
+    // setState(() {
+    //   _isLoading = false;
+    // });
     return msg;
   }
 

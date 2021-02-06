@@ -20,7 +20,7 @@ class LeaderboardItem {
   UserData userData;
 
   LeaderboardItem.fromJson(Map<String, dynamic> json)
-      : this.userID = json['_id'],
+      : this.userID = json['_id'] ?? '123',
         this.totalCredits = json['totalCredits'],
         this.userData = UserData.fromJson(json['userData']);
 }
