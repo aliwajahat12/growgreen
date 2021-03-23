@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:growgreen/Models/Credits.dart';
 import 'package:growgreen/Models/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';

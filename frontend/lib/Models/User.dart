@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 
 const backendLink = 'http://10.0.2.2:3000/api/';
 const backendLinkImage = 'http://10.0.2.2:3000/';
+// const backendLink = 'https://growgreen.azurewebsites.net/api/';
+// const backendLinkImage = 'https://growgreen.azurewebsites.net/';
 
 class User with ChangeNotifier {
   String userID;
@@ -98,7 +100,9 @@ class User with ChangeNotifier {
     try {
       final response = await http.get(backendLink + 'user/$userID/credits');
       final responseBody = jsonDecode(response.body);
-      credits = responseBody['userCredits'].toInt();
+      credits = responseBody['userCredits'] == null
+          ? 0
+          : responseBody['userCredits'].toInt();
     } catch (e) {
       print(e);
     }

@@ -88,16 +88,16 @@ class Places with ChangeNotifier {
         print('Going To Add Place Locallly');
         _placeslist.add(newPlace);
         print('Place Added Locally');
-        final data1 = {
-          'userId': data['userID'],
-          // 'plantID': responseBody['plant_id'],
-          'placeID': responseBody['place_id'],
-          'credits': 300,
-          'isRelatedToPlanted': false,
-          'reason':
-              'Added A New Place At Lat: ${data['lat'].toString()} Long: ${data['long'].toString()}',
-          'image': backendLinkImage + imageUrl,
-        };
+        // final data1 = {
+        //   'userId': data['userID'],
+        //   // 'plantID': responseBody['plant_id'],
+        //   'placeID': responseBody['place_id'],
+        //   'credits': 300,
+        //   'isRelatedToPlanted': false,
+        //   'reason':
+        //       'Added A New Place At Lat: ${data['lat'].toString()} Long: ${data['long'].toString()}',
+        //   'image': backendLinkImage + imageUrl,
+        // };
         // msg = await Credits.addCredits(data1);
       }
     } catch (e) {
