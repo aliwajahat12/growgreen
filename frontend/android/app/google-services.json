@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "714451314673",
+    "project_id": "growgreen-298e7",
+    "storage_bucket": "growgreen-298e7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:714451314673:android:b7122efa7c00f181b50650",
+        "android_client_info": {
+          "package_name": "com.example.growgreen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "714451314673-n7qa18a15k4ior2th3mcp5vd0v2var47.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiWqwVt0RmLmrGx0UBcuX0is-ZyzD4nRE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "714451314673-n7qa18a15k4ior2th3mcp5vd0v2var47.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
