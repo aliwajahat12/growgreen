@@ -12,16 +12,17 @@ class Credits with ChangeNotifier {
   String reason;
   DateTime date;
   String image;
+  int approvalStage;
 
-  Credits({
-    this.userID,
-    this.plantID,
-    this.placeID,
-    this.credits,
-    this.reason,
-    this.date,
-    this.image,
-  });
+  Credits(
+      {this.userID,
+      this.plantID,
+      this.placeID,
+      this.credits,
+      this.reason,
+      this.date,
+      this.image,
+      this.approvalStage});
 
   Credits.fromJson(Map<String, dynamic> json)
       : this.userID = json['userID'],
@@ -30,6 +31,7 @@ class Credits with ChangeNotifier {
         this.credits = json['credits'].toint(),
         this.reason = json['reason'],
         this.image = json['image'],
+        this.approvalStage = json['approvalStage'],
         this.date = json['date'].toDate();
 
   static Future<String> addCredits(Map<String, dynamic> data) async {
@@ -61,5 +63,21 @@ class Credits with ChangeNotifier {
       print('Error Returned: $e');
     }
     return msg;
+  }
+
+  Future<List<Credits>> getPlantedCredits(String plantedId) async {
+    List<Credits> _plantedCredits = [];
+    try {
+      print('In Func');
+      final response = await http.get(backendLink + 'credit/$plantedId');
+      print(response);
+      final responseData = jsonDecode(response.body);
+      Iterable list = responseData['plants'];
+      _plantedCredits = list.map((model) => Credits.fromJson(model)).toList();
+    } catch (e) {
+      print(e);
+    }
+    print('Done ');
+    return [..._plantedCredits];
   }
 }

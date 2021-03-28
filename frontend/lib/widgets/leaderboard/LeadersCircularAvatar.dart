@@ -57,11 +57,12 @@ class LeadersCircularAvatar extends StatelessWidget {
           ),
           child: Text(
             score,
+            overflow: TextOverflow.clip,
             textAlign: TextAlign.center,
             style: TextStyle(
                 // color: Theme.of(context).primaryColor,
                 color: Colors.white,
-                fontSize: 16),
+                fontSize: 13),
           ),
         ),
       ],

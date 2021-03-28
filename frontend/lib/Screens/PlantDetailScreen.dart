@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:growgreen/Models/Credits.dart';
+import 'package:growgreen/Models/Planted.dart';
 import 'package:growgreen/Screens/CameraScreen.dart';
+import 'package:provider/provider.dart';
 
 class PlantDetailScreen extends StatelessWidget {
   static const routeName = '/plantDetail';
@@ -7,6 +10,9 @@ class PlantDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
+    final plantedId = ModalRoute.of(context).settings.arguments as String;
+    Planted plantDetail;
+    List<Credits> plantedDetails;
 
     imagePlacer(double height, String link) {
       return Container(
@@ -46,13 +52,44 @@ class PlantDetailScreen extends StatelessWidget {
       );
     }
 
-    detailRow() {
+    String approvalStageToString(int approvalStage) {
+      String status = '';
+      switch (approvalStage) {
+        case 0:
+          {
+            status = 'Pending';
+          }
+          break;
+        case 1:
+          {
+            status = 'Approved';
+          }
+          break;
+        case -1:
+          {
+            status = 'Rejected';
+          }
+          break;
+
+        default:
+          {
+            status = '';
+          }
+          break;
+      }
+
+      return status;
+    }
+
+    detailRow(Credits plantedDetail) {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 6),
         margin: const EdgeInsets.symmetric(vertical: 2),
         width: size.width,
         height: 60,
-        color: theme.primaryColor,
+        color: plantedDetail.approvalStage == -1
+            ? theme.errorColor
+            : theme.primaryColor,
         child: Row(
           children: [
             Expanded(
@@ -61,11 +98,11 @@ class PlantDetailScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Jan',
+                    plantedDetail.date.month.toString(),
                     style: TextStyle(color: Colors.white, fontSize: 15),
                   ),
                   Text(
-                    '18',
+                    plantedDetail.date.day.toString(),
                     style: TextStyle(color: Colors.white, fontSize: 20),
                   )
                 ],
@@ -82,11 +119,13 @@ class PlantDetailScreen extends StatelessWidget {
                     disabledColor: Colors.white,
                     color: Colors.white,
                   ),
-                  Text('Pending',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20)),
+                  Text(
+                    approvalStageToString(plantedDetail.approvalStage),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20),
+                  ),
                 ],
               ),
             ),
@@ -100,7 +139,7 @@ class PlantDetailScreen extends StatelessWidget {
                     style: TextStyle(color: Colors.white),
                   ),
                   Text(
-                    '+5',
+                    plantedDetail.credits.toString(),
                     style: TextStyle(color: Colors.white),
                   ),
                 ],
@@ -115,10 +154,18 @@ class PlantDetailScreen extends StatelessWidget {
       return Container(
         height: size.height * 0.448,
         child: ListView.builder(
-          itemBuilder: (ctx, i) => detailRow(),
-          itemCount: 5,
+          itemBuilder: (ctx, i) => detailRow(plantedDetails[i]),
+          itemCount: plantedDetails.length,
         ),
       );
+    }
+
+    Future<void> getPlantAndPlantedDetails() async {
+      //TODO: implement function to return the planted Details
+      plantDetail = await Provider.of<Planteds>(context, listen: false)
+          .getPlantDetails(plantedId);
+      plantedDetails = await Provider.of<Credits>(context, listen: false)
+          .getPlantedCredits(plantedId);
     }
 
     return Scaffold(
@@ -133,76 +180,94 @@ class PlantDetailScreen extends StatelessWidget {
               Navigator.of(context).pop();
             }),
       ),
-      body: Column(
-        children: [
-          Container(
-            height: size.height * 0.35,
-            child: Stack(
+      body: FutureBuilder(
+        future: getPlantAndPlantedDetails(),
+        builder: (ctx, snap) {
+          if (snap.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return Column(
               children: [
                 Container(
                   height: size.height * 0.35,
-                  color: theme.primaryColor,
-                ),
-                Positioned(
-                  // top: size.height * 0.05,
-                  right: size.width * 0.05,
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(CameraScreen.routeName);
-                    },
-                    icon: Icon(
-                      Icons.add_a_photo,
-                      color: Colors.white,
-                      size: 30,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: size.height * 0.07,
-                  left: size.width * 0.05,
-                  child: imagePlacer(size.height * 0.22,
-                      'https://atlas-content-cdn.pixelsquid.com/stock-images/potted-plant-flower-pot-mdm41mF-600.jpg'),
-                ),
-                Positioned(
-                  top: size.height * 0.1,
-                  right: size.width * 0.05,
-                  child: Container(
-                    width: size.width * 0.5,
-                    height: size.height * 0.3,
-                    child: Column(
-                      children: [
-                        Text(
-                          'Giant Sequoia',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          'Block 2 Gulistan e jauhar Karachi',
-                          style: TextStyle(color: Colors.white, fontSize: 13),
-                        ),
-                        Container(
-                          width: size.width * 0.5,
-                          height: size.height * 0.1,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (ctx, i) => imagePlacer(
-                                size.height * 0.075,
-                                'https://atlas-content-cdn.pixelsquid.com/stock-images/potted-plant-flower-pot-mdm41mF-600.jpg'),
-                            itemCount: 4,
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: size.height * 0.35,
+                        color: theme.primaryColor,
+                      ),
+                      Positioned(
+                        // top: size.height * 0.05,
+                        right: size.width * 0.05,
+                        child: IconButton(
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pushNamed(CameraScreen.routeName);
+                          },
+                          icon: Icon(
+                            Icons.add_a_photo,
+                            color: Colors.white,
+                            size: 30,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      Positioned(
+                        top: size.height * 0.07,
+                        left: size.width * 0.05,
+                        child: imagePlacer(
+                            size.height * 0.22,
+                            // 'https://atlas-content-cdn.pixelsquid.com/stock-images/potted-plant-flower-pot-mdm41mF-600.jpg'),
+                            plantDetail.image),
+                      ),
+                      Positioned(
+                        top: size.height * 0.1,
+                        right: size.width * 0.05,
+                        child: Container(
+                          width: size.width * 0.5,
+                          height: size.height * 0.3,
+                          child: Column(
+                            children: [
+                              Text(
+                                plantDetail.nickname,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                plantDetail.location,
+                                // 'Block 2 Gulistan e jauhar Karachi',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 13),
+                              ),
+                              Container(
+                                width: size.width * 0.5,
+                                height: size.height * 0.1,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: (ctx, i) => imagePlacer(
+                                    size.height * 0.075,
+                                    plantedDetails[i].image,
+                                  ),
+                                  // 'https://atlas-content-cdn.pixelsquid.com/stock-images/potted-plant-flower-pot-mdm41mF-600.jpg'),
+                                  itemCount: plantedDetails.length,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+                headerRow(),
+                plantHistory(),
               ],
-            ),
-          ),
-          headerRow(),
-          plantHistory(),
-        ],
+            );
+          }
+        },
       ),
     );
   }

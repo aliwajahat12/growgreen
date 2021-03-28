@@ -19,6 +19,18 @@ module.exports = {
       res.json({ status: "failed", reason: "error", error: err.message });
     }
   },
+  getPlantedObject: async (req, res) => {
+    try {
+      const { planted_Id } = req.params;
+      const plant = await PlantedModel.findOne({
+        plantedId: mongoose.Types.ObjectId(planted_Id),
+      })
+      res.json({ plant: plant });
+    } catch (err) {
+      console.error("Error: " + err.message);
+      res.json({ status: "failed", reason: "error", error: err.message });
+    }
+  },
   newPlant: async (req, res) => {
     try {
       const { user_id } = req.params;

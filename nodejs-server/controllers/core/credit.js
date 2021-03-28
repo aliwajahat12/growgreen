@@ -4,7 +4,24 @@ const PlantedModel = require("../../models/planted");
 const UserModel = require("../../models/user");
 
 module.exports = {
-  getPlantedCredits: async (req, res) => {},
+  getPlantedCredits: async (req, res) => {
+    try {
+      const { planted_Id } = req.body;
+      const foundPlantsCredits = CreditModel.find(
+        { plantedId: mongoose.Types.ObjectId(planted_Id)}
+      )
+      res.json({
+        status: "success", foundPlantsCredits
+      })
+    } catch (err) {
+      console.log("Error in Getting Planted Credits: " + err.message);
+      res.json({
+        status: "fail",
+        reason: "error",
+        error: err.messsage,
+      });
+    }
+  },
   addCredits: async (req, res) => {
     try {
       const {
@@ -24,14 +41,14 @@ module.exports = {
         reason: reason,
       });
       if (isRelatedToPlanted) {
-          newCredit.plantId = mongoose.Types.ObjectId(plantedId);
+        newCredit.plantId = mongoose.Types.ObjectId(plantedId);
         const wateringCreditsPlant = await PlantedModel.findById(
           plantedId
         ).populate("plantId");
         console.log(wateringCreditsPlant);
         newCredit.credits = wateringCreditsPlant.plantId.wateringCredits;
-        if(reason === null){
-            newCredit.reason = "Schedule watering";
+        if (reason === null) {
+          newCredit.reason = "Schedule watering";
         }
       }
       await newCredit.save();
@@ -90,39 +107,39 @@ module.exports = {
           date: { $gte: datePriorWeek },
         })
         .lookup({
-            from: UserModel.collection.name,
-            localField: "userId",
-            foreignField: "_id",
-            as: "userData",
-          })
-          .unwind({
-            path: "$userData",
-            preserveNullAndEmptyArrays: true,
-          })
-          .group({
-            _id: "$userData._id",
-            totalCredits: { $sum: "$credits" },
-          })
-          .lookup({
-            from: UserModel.collection.name,
-            localField: "_id",
-            foreignField: "_id",
-            as: "userData",
-          })
-          .unwind({
-            path: "$userData",
-            preserveNullAndEmptyArrays: true,
-          })
-          .project({
-            userData: { email: 0 },
-          })
-          .project({
-            userData: { passwd: 0 },
-          })
-          .project({
-            userData: { __v: 0 },
-          })
-          .sort("-totalCredits");
+          from: UserModel.collection.name,
+          localField: "userId",
+          foreignField: "_id",
+          as: "userData",
+        })
+        .unwind({
+          path: "$userData",
+          preserveNullAndEmptyArrays: true,
+        })
+        .group({
+          _id: "$userData._id",
+          totalCredits: { $sum: "$credits" },
+        })
+        .lookup({
+          from: UserModel.collection.name,
+          localField: "_id",
+          foreignField: "_id",
+          as: "userData",
+        })
+        .unwind({
+          path: "$userData",
+          preserveNullAndEmptyArrays: true,
+        })
+        .project({
+          userData: { email: 0 },
+        })
+        .project({
+          userData: { passwd: 0 },
+        })
+        .project({
+          userData: { __v: 0 },
+        })
+        .sort("-totalCredits");
       console.log(weeklyLeaderboard);
       res.json({ overallLeaderboard, weeklyLeaderboard });
     } catch (err) {

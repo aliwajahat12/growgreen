@@ -2,13 +2,12 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 
-Future<dynamic> uploadImage(File imageFile, String imagePathAndName) async {
-  final ref =
-      FirebaseStorage.instance.ref().child('ProfilePic/$imagePathAndName');
+Future<dynamic> uploadImage(File imageFile, String id) async {
+  String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+  final ref = FirebaseStorage.instance.ref().child('upload/$id/$fileName');
   await ref.putFile(imageFile).onComplete;
   final imageUrl = await ref.getDownloadURL();
   return imageUrl;
-  // String fileName = DateTime.now().millisecondsSinceEpoch.toString();
   // StorageReference reference =
   //     FirebaseStorage.instance.ref().child('CaseCampaign/$caseid/$fileName');
   // StorageUploadTask uploadTask =

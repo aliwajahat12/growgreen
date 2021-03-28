@@ -272,6 +272,7 @@ class _AddNewPlantScreenState extends State<AddNewPlantScreen> {
       'plantId': _selectedPlant.plantID,
       'credits': _selectedPlant.plantingCredits,
       'plantPic': _selectedPlant.picture,
+      'location': _currentAddress,
     };
     msg = await Provider.of<Planteds>(context, listen: false)
         .addUserPlant(File(imageFile.path), userID, data);

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:growgreen/Models/utils.dart';
+import 'package:growgreen/Util/AddImageToFirebase.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
@@ -19,6 +19,7 @@ class Planted {
   String image;
   DateTime date;
   String plantName;
+  String location;
 
   Planted(
       {this.plantedID,
@@ -30,6 +31,7 @@ class Planted {
       this.longitude,
       this.image,
       this.date,
+      this.location,
       this.plantName});
 
   Planted.fromJson(Map<String, dynamic> json)
@@ -41,6 +43,7 @@ class Planted {
         this.latitude = json['latitude'],
         this.longitude = json['longitude'],
         this.image = json['image'],
+        this.location = json['location'],
         this.plantName = json['plantId']['name'],
         // this.image = List.from(json['image']),
         this.date = DateFormat("yyyy-MM-ddTHH:mm:ssZ")
@@ -50,12 +53,13 @@ class Planted {
 
 class Planteds with ChangeNotifier {
   List<Planted> _plantedList = [];
+
   Future<String> addUserPlant(
       File imageFile, String id, Map<String, dynamic> data) async {
     String msg = '';
-
     try {
-      final imageUrl = await addImage(imageFile, id);
+      // final imageUrl = await addImage(imageFile, id);
+      final imageUrl = await uploadImage(imageFile, id);
       print(data);
       final response =
           await http.post(backendLink + 'planted/${data['userId']}', body: {
@@ -64,6 +68,7 @@ class Planteds with ChangeNotifier {
         'long': data['long'].toString(),
         'nickname': data['nickname'],
         'media': data['plantPic'],
+        'location': data['location'],
       });
       // print('Returned From Post');
       final responseBody = jsonDecode(response.body);
@@ -82,6 +87,7 @@ class Planteds with ChangeNotifier {
             plantID: data['plantId'],
             nickname: data['nickname'],
             image: data['plantPic'],
+            location: data['location'],
             // image: backendLinkImage + imageUrl,
           ),
         );
@@ -94,7 +100,7 @@ class Planteds with ChangeNotifier {
           'isRelatedToPlanted': true,
           'reason':
               'Added A New Plant At Lat: ${data['lat'].toString()} Long: ${data['long'].toString()}',
-          'image': backendLinkImage + imageUrl,
+          'image': imageUrl,
         };
         print('Data1 $data1');
         // msg = await Credits.addCredits(data1);
@@ -112,7 +118,7 @@ class Planteds with ChangeNotifier {
     if (_plantedList.isEmpty) {
       try {
         print(userID);
-        final response = await http.get(backendLink + 'planted/$userID');
+        final response = await http.get(backendLink + 'planted/userId/$userID');
         final responseData = jsonDecode(response.body);
         // print(responseData);
         Iterable list = responseData['planted_details'];
@@ -126,5 +132,19 @@ class Planteds with ChangeNotifier {
       // print(_plantedList);
     }
     return [..._plantedList];
+  }
+
+  Future<Planted> getPlantDetails(String plantedId) async {
+    Planted plantDetail;
+    try {
+      final response =
+          await http.get(backendLink + 'planted/plantId/$plantedId');
+      final responseData = jsonDecode(response.body);
+      // print(responseData);
+      plantDetail = responseData['planted_detail'];
+    } catch (e) {
+      print(e);
+    }
+    return plantDetail;
   }
 }

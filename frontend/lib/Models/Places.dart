@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 // import 'package:growgreen/Models/Credits.dart';
 import 'package:growgreen/Models/User.dart';
-import 'package:growgreen/Models/utils.dart';
+import 'package:growgreen/Util/AddImageToFirebase.dart';
 import 'package:http/http.dart' as http;
 
 class Place {
@@ -60,7 +60,7 @@ class Places with ChangeNotifier {
     String msg = '';
     try {
       print(data['placeName']);
-      final imageUrl = await addImage(imageFile, id);
+      final imageUrl = await uploadImage(imageFile, id);
       print(data);
       final response = await http.post(backendLink + 'place/', body: {
         'ownerId': data['ownerId'],
@@ -68,7 +68,7 @@ class Places with ChangeNotifier {
         'lat': data['lat'].toString(),
         'long': data['long'].toString(),
         'placeName': data['placeName'],
-        'placeImage': backendLinkImage + imageUrl,
+        'placeImage': imageUrl,
         // 'placeImage': '/media/image-upload-1612102786024.jpg'
       });
       print('Returned From Post');
@@ -78,7 +78,7 @@ class Places with ChangeNotifier {
         msg = responseBody['reason'];
       } else {
         Place newPlace = Place(
-            image: backendLinkImage + imageUrl,
+            image: imageUrl,
             ownerID: data['ownerId'],
             placeID: responseBody['place_id'],
             isPublic: data['isPublic'],

@@ -1,12 +1,18 @@
 const express = require('express');
-const {getPlanted, newPlant} = require('../../controllers/core/planted');
+const { getPlanted, newPlant, getPlantedObject } = require('../../controllers/core/planted');
 
-const  router = express.Router();
+const router = express.Router();
 
-// @ route:     GET /api/planted/:user_id/
+// @ route:     GET /api/planted/userId/:user_id/
 // @ desc:      Returns an array of planted plants by an user
 // @ access:    a user can access his/her own plants
-router.get("/:user_id/", getPlanted);
+router.get("/userId/:user_id/", getPlanted);
+
+
+// @ route:     GET /api/planted/plantId/:user_id/
+// @ desc:      Returns an Object with PlantedId = PlantedId
+// @ access:    a user can access his/her own plants
+router.get("/plantId/:user_id/", getPlantedObject);
 
 // @ route:     POST /api/planted
 // @ desc:      Adds a new plant
