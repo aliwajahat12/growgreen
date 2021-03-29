@@ -26,6 +26,7 @@ class UserPlants extends StatelessWidget {
     userPlantItem(double height1, double width, Planted plantedItem) {
       return GestureDetector(
         onTap: () {
+          print("Argument: ${plantedItem.plantedID}");
           Navigator.of(context).pushNamed(PlantDetailScreen.routeName,
               arguments: plantedItem.plantedID);
         },

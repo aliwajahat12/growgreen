@@ -6,6 +6,7 @@ import 'package:growgreen/Models/Places.dart';
 import 'package:growgreen/Models/Plant.dart';
 import 'package:growgreen/Models/Planted.dart';
 import 'package:growgreen/Models/Seller.dart';
+import 'package:growgreen/Screens/AddNewPicturePlant.dart';
 import 'package:growgreen/Screens/AddNewPlaceScreen.dart';
 import 'package:growgreen/Screens/AddNewPlant.dart';
 import 'package:growgreen/Screens/CameraScreen.dart';
@@ -66,6 +67,7 @@ class MyApp extends StatelessWidget {
           PlacesListScreen.routeName: (ctx) => PlacesListScreen(),
           AddNewPlaceScreen.routeName: (ctx) => AddNewPlaceScreen(),
           AddNewPlantScreen.routeName: (ctx) => AddNewPlantScreen(),
+          AddNewPicturePlant.routeName: (ctx) => AddNewPicturePlant(),
         },
       ),
     );

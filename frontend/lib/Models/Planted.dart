@@ -36,12 +36,12 @@ class Planted {
 
   Planted.fromJson(Map<String, dynamic> json)
       : this.userID = json['userID'],
-        this.plantedID = json['plantedID'],
+        this.plantedID = json['_id'],
         this.plantID = json['plantID'],
         this.placeID = json['placeID'],
         this.nickname = json['nickname'],
-        this.latitude = json['latitude'],
-        this.longitude = json['longitude'],
+        // this.latitude = json['placeId']['lat'] ?? '0.0',
+        // this.longitude = json['placeId']['long'] ?? '0.0',
         this.image = json['image'],
         this.location = json['location'],
         this.plantName = json['plantId']['name'],
@@ -113,16 +113,23 @@ class Planteds with ChangeNotifier {
     return msg;
   }
 
+  List<Planted> getPlantedLocal() {
+    return [..._plantedList];
+  }
+
   Future<List<Planted>> getPlanted(String userID) async {
     _plantedList = [];
     if (_plantedList.isEmpty) {
       try {
-        print(userID);
+        print(backendLink + 'planted/userId/$userID');
         final response = await http.get(backendLink + 'planted/userId/$userID');
         final responseData = jsonDecode(response.body);
+        // if (responseData['status'] != 'fail') {
         // print(responseData);
+        // print(responseData['status']);
         Iterable list = responseData['planted_details'];
         _plantedList = list.map((model) => Planted.fromJson(model)).toList();
+        // }
       } catch (e) {
         print(e);
       }
@@ -135,13 +142,15 @@ class Planteds with ChangeNotifier {
   }
 
   Future<Planted> getPlantDetails(String plantedId) async {
+    print('In getplantedDetails');
     Planted plantDetail;
+    print(backendLink + 'planted/plantId/$plantedId');
     try {
       final response =
           await http.get(backendLink + 'planted/plantId/$plantedId');
       final responseData = jsonDecode(response.body);
       // print(responseData);
-      plantDetail = responseData['planted_detail'];
+      plantDetail = Planted.fromJson(responseData['plant']);
     } catch (e) {
       print(e);
     }

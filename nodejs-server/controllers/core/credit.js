@@ -41,7 +41,7 @@ module.exports = {
         reason: reason,
       });
       if (isRelatedToPlanted) {
-        newCredit.plantId = mongoose.Types.ObjectId(plantedId);
+        newCredit.plantedId = mongoose.Types.ObjectId(plantedId);
         const wateringCreditsPlant = await PlantedModel.findById(
           plantedId
         ).populate("plantId");

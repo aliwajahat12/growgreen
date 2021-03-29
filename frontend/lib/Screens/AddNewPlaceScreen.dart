@@ -1,10 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:growgreen/Models/Places.dart';
 import 'package:growgreen/Models/User.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/SuccessMessageDialog.dart';
@@ -24,6 +21,7 @@ class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
   bool _isLoading = false;
   Position _currentPosition;
   String _currentAddress = '';
+  String latLong = '';
   final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
   bool isPublic = true;
   // int _radioPublicPrivate = 0;
@@ -40,79 +38,44 @@ class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
     super.dispose();
   }
 
-  Future<String> _submit(PickedFile imageFile, String userID) async {
+  Future<String> _submit(
+      // PickedFile imageFile,
+      String userID) async {
     print('In Submit');
     // nameFocusNode.unfocus();
     var msg = '';
     final form = _formkey.currentState;
-    // if (form.validate()) {
     form.save();
 
-    msg = await addPlace(imageFile, userID);
-    // if (msg == '') {
-    //   // if (!isLogin) {
-    //   Navigator.of(context).pop();
-    // } else {
-    // msg = 'Form Incomplete';
-    // print('Invalid Entry');
-    // _failSnackbar(msg);
-    // }
+    msg = await addPlace(
+        // imageFile,
+        userID);
     return msg;
   }
 
-  // void _handleRadioValueChange1(int value) {
-  //   setState(() {
-  //     _radioPublicPrivate = value;
-
-  //     switch (_radioPublicPrivate) {
-  //       case 0:
-  //         isPublic = true;
-  //         break;
-  //       case 1:
-  //         isPublic = false;
-  //         break;
-  //     }
-  //   });
-  // }
-
-  // Widget _choseFromPublicPrivate() {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.center,
-  //     children: <Widget>[
-  //       Text('Category', style: new TextStyle(fontSize: 20.0)),
-  //       Radio(
-  //         value: 0,
-  //         groupValue: _radioPublicPrivate,
-  //         onChanged: _handleRadioValueChange1,
-  //       ),
-  //       new Text(
-  //         'Public',
-  //         style: new TextStyle(fontSize: 16.0),
-  //       ),
-  //       new Radio(
-  //         value: 1,
-  //         groupValue: _radioPublicPrivate,
-  //         onChanged: _handleRadioValueChange1,
-  //       ),
-  //       new Text(
-  //         'Private',
-  //         style: new TextStyle(
-  //           fontSize: 16.0,
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
-
   Widget _displayLocation() {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 15.0),
+      padding: const EdgeInsets.only(top: 15, bottom: 15.0),
       child: _currentAddress == null
           ? CircularProgressIndicator()
-          : Text(
-              _currentAddress,
-              style:
-                  TextStyle(color: Theme.of(context).accentColor, fontSize: 18),
+          : Column(
+              children: [
+                Text(
+                  "Current Location",
+                  style: TextStyle(
+                      color: Theme.of(context).accentColor, fontSize: 18),
+                ),
+                Text(
+                  latLong,
+                  style: TextStyle(
+                      color: Theme.of(context).accentColor, fontSize: 18),
+                ),
+                Text(
+                  _currentAddress,
+                  style: TextStyle(
+                      color: Theme.of(context).accentColor, fontSize: 18),
+                ),
+              ],
             ),
     );
   }
@@ -144,7 +107,10 @@ class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
       List<Placemark> p = await geolocator.placemarkFromCoordinates(
           _currentPosition.latitude, _currentPosition.longitude);
       Placemark place = p[0];
-      _currentAddress = "${place.name}, ${place.locality}, ${place.country}";
+      setState(() {
+        _currentAddress = "${place.name}, ${place.locality}, ${place.country}";
+        latLong = "${_currentPosition.latitude},${_currentPosition.longitude}";
+      });
     } catch (e) {
       print(e);
     }
@@ -165,7 +131,9 @@ class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
     }
   }
 
-  Widget _formActionButton(PickedFile imageFile, String userID) {
+  Widget _formActionButton(
+      // PickedFile imageFile,
+      String userID) {
     return Padding(
       padding: EdgeInsets.only(top: 40),
       child: _isLoading
@@ -177,7 +145,9 @@ class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
                   height: 55,
                   child: RaisedButton(
                     onPressed: () async {
-                      await confirmationDialogBox(imageFile, userID);
+                      await confirmationDialogBox(
+                          // imageFile,
+                          userID);
                     },
                     child: Text(
                       'Submit',
@@ -211,7 +181,9 @@ class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
   //   _scaffoldKey.currentState.showSnackBar(snackBar);
   // }
 
-  Future<String> addPlace(PickedFile imageFile, String userID) async {
+  Future<String> addPlace(
+      // PickedFile imageFile,
+      String userID) async {
     var msg = '';
     // setState(() {
     //   _isLoading = true;
@@ -223,8 +195,10 @@ class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
       'lat': _currentPosition.latitude,
       'ownerId': userID,
     };
-    msg = await Provider.of<Places>(context, listen: false)
-        .addPlace(File(imageFile.path), userID, data);
+    msg = await Provider.of<Places>(context, listen: false).addPlace(
+        // File(imageFile.path),
+        userID,
+        data);
 
     // setState(() {
     //   _isLoading = false;
@@ -233,7 +207,8 @@ class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
   }
 
   Future<void> confirmationDialogBox(
-      PickedFile imageFile, String userID) async {
+      // PickedFile imageFile,
+      String userID) async {
     return showDialog(
       context: context,
       barrierDismissible: false,
@@ -244,7 +219,9 @@ class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
           height: 400.0,
           width: 300.0,
           child: FutureBuilder(
-              future: _submit(imageFile, userID),
+              future: _submit(
+                  // imageFile,
+                  userID),
               builder: (ctx, snap) {
                 if (snap.connectionState == ConnectionState.waiting) {
                   return Center(
@@ -270,24 +247,25 @@ class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
   @override
   Widget build(BuildContext context) {
     final userInfo = Provider.of<User>(context);
-    final imageFile = ModalRoute.of(context).settings.arguments as PickedFile;
+    // final imageFile = ModalRoute.of(context).settings.arguments as PickedFile;
     final size = MediaQuery.of(context).size;
     _getCurrentLocation();
     Widget _previewImage() {
-      return imageFile != null
+      return _currentAddress != ''
           ? Container(
               margin: const EdgeInsets.only(top: 20, bottom: 5),
               height: size.height * 0.3,
               width: size.width * 0.7,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: Image.file(
-                  File(imageFile.path),
-                  fit: BoxFit.cover,
+                child: Image.network(
+                  // File(imageFile.path),
+                  'https://maps.googleapis.com/maps/api/staticmap?center=${_currentPosition.latitude},${_currentPosition.longitude}&zoom=21&size=512x512&format=jpg&maptype=satellite&key=AIzaSyCr0-s_qBQozzmLIAzQvnUWwRSQUMuhwN4',
+                  fit: BoxFit.contain,
                 ),
               ),
             )
-          : null;
+          : Container();
     }
 
     return SafeArea(
@@ -305,30 +283,35 @@ class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
               }),
         ),
         body: SingleChildScrollView(
-          child: Column(
-            children: [
-              _previewImage(),
-              _displayLocation(),
-              // _choseFromPublicPrivate(),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                child: Center(
-                  child: SingleChildScrollView(
-                    child: Form(
-                      key: _formkey,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _namefield(),
-                          _formActionButton(imageFile, userInfo.userID),
-                        ],
+          child: Padding(
+            padding: const EdgeInsets.only(top: 25.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _previewImage(),
+                _displayLocation(),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  child: Center(
+                    child: SingleChildScrollView(
+                      child: Form(
+                        key: _formkey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _namefield(),
+                            _formActionButton(
+                                // imageFile,
+                                userInfo.userID),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

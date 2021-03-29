@@ -3,7 +3,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:growgreen/Models/Places.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:growgreen/Models/User.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import 'AddNewPlaceScreen.dart';
@@ -15,39 +14,40 @@ class PlacesListScreen extends StatelessWidget {
     final user = Provider.of<User>(context);
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
-    PickedFile _imageFile;
-    String _pickImageError;
-    final ImagePicker _picker = ImagePicker();
+    // PickedFile _imageFile;
+    // String _pickImageError;
+    // final ImagePicker _picker = ImagePicker();
     final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
 
-    Future<void> _onImageButtonPressed(
-      ImageSource source,
-    ) async {
-      try {
-        final pickedFile = await _picker.getImage(
-          source: source,
-          maxWidth: 600,
-          maxHeight: 600,
-          imageQuality: 100,
-        );
+    // Future<void> _onImageButtonPressed(
+    //   ImageSource source,
+    // ) async {
+    //   try {
+    //     final pickedFile = await _picker.getImage(
+    //       source: source,
+    //       maxWidth: 600,
+    //       maxHeight: 600,
+    //       imageQuality: 100,
+    //     );
 
-        _imageFile = pickedFile;
-      } catch (e) {
-        _pickImageError = e.toString();
-      }
-    }
+    //     _imageFile = pickedFile;
+    //   } catch (e) {
+    //     _pickImageError = e.toString();
+    //   }
+    // }
 
     addNewPlaceWidget() {
       return GestureDetector(
         onTap: () async {
-          await _onImageButtonPressed(ImageSource.camera);
-          if (_imageFile != null) {
-            print('Image Picked');
-            Navigator.of(context)
-                .pushNamed(AddNewPlaceScreen.routeName, arguments: _imageFile);
-          } else {
-            print('Image Not Picked. $_pickImageError');
-          }
+          // await _onImageButtonPressed(ImageSource.camera);
+          // if (_imageFile != null) {
+          // print('Image Picked');
+          Navigator.of(context).pushNamed(AddNewPlaceScreen.routeName
+              // , arguments: _imageFile
+              );
+          // } else {
+          // print('Image Not Picked. $_pickImageError');
+          // }
         },
         child: Container(
           height: size.height * 0.20,

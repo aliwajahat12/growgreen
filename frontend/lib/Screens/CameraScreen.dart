@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:growgreen/Models/Planted.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 
+import 'AddNewPicturePlant.dart';
 import 'AddNewPlant.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -147,8 +150,10 @@ class _CameraScreenState extends State<CameraScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
+    final userPlants =
+        Provider.of<Planteds>(context, listen: false).getPlantedLocal();
 
-    imagePlacer(double height, String link, int i) {
+    imagePlacer(double height, int i) {
       return Container(
         height: height,
         width: height,
@@ -169,7 +174,7 @@ class _CameraScreenState extends State<CameraScreen> {
                   fit: BoxFit.cover,
                 )
               : Image.network(
-                  link,
+                  userPlants[i - 1].image,
                   fit: BoxFit.contain,
                 ),
         ),
@@ -190,16 +195,13 @@ class _CameraScreenState extends State<CameraScreen> {
           ),
           child: Row(
             children: [
-              imagePlacer(
-                  size.height * 0.15,
-                  'https://atlas-content-cdn.pixelsquid.com/stock-images/potted-plant-flower-pot-mdm41mF-600.jpg',
-                  i),
+              imagePlacer(size.height * 0.15, i),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    i == 0 ? 'New Plant' : 'Giant Sequoia',
+                    i == 0 ? 'New Plant' : userPlants[i - 1].nickname,
                     style: TextStyle(
                       color: i == 0 ? Colors.white : Color(0xFF218754),
                       fontSize: 20,
@@ -208,7 +210,7 @@ class _CameraScreenState extends State<CameraScreen> {
                   Text(
                     i == 0
                         ? _currentAddress
-                        : 'Block 2 Gulistan e jauhar Karach',
+                        : userPlants[i - 1].location ?? 'Karachi',
                     style: TextStyle(
                       color: i == 0 ? Colors.white : Color(0xFF218754),
                       fontSize: 12,
@@ -222,6 +224,12 @@ class _CameraScreenState extends State<CameraScreen> {
                   if (i == 0) {
                     Navigator.of(context).pushNamed(AddNewPlantScreen.routeName,
                         arguments: _imageFile);
+                  } else {
+                    Navigator.of(context)
+                        .pushNamed(AddNewPicturePlant.routeName, arguments: {
+                      'imageFile': _imageFile,
+                      'plantedId': userPlants[i - 1].plantedID
+                    });
                   }
                   // print('Going In Func');
                   // await Provider.of<Plant>(context, listen: false).addPlace(
@@ -277,7 +285,7 @@ class _CameraScreenState extends State<CameraScreen> {
                         ),
                         Expanded(
                           child: ListView.builder(
-                              itemCount: 5,
+                              itemCount: userPlants.length + 1,
                               itemBuilder: (ctx, i) => plantSelection(i)),
                         ),
                       ],

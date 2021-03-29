@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:growgreen/Models/Credits.dart';
 // import 'package:growgreen/Models/Credits.dart';
 import 'package:growgreen/Models/User.dart';
 import 'package:growgreen/Util/AddImageToFirebase.dart';
@@ -56,11 +56,13 @@ class Places with ChangeNotifier {
   }
 
   Future<String> addPlace(
-      File imageFile, String id, Map<String, dynamic> data) async {
+      // File imageFile,
+      String id,
+      Map<String, dynamic> data) async {
     String msg = '';
     try {
       print(data['placeName']);
-      final imageUrl = await uploadImage(imageFile, id);
+      // final imageUrl = await uploadImage(imageFile, id);
       print(data);
       final response = await http.post(backendLink + 'place/', body: {
         'ownerId': data['ownerId'],
@@ -68,7 +70,7 @@ class Places with ChangeNotifier {
         'lat': data['lat'].toString(),
         'long': data['long'].toString(),
         'placeName': data['placeName'],
-        'placeImage': imageUrl,
+        'placeImage': '',
         // 'placeImage': '/media/image-upload-1612102786024.jpg'
       });
       print('Returned From Post');
@@ -78,7 +80,7 @@ class Places with ChangeNotifier {
         msg = responseBody['reason'];
       } else {
         Place newPlace = Place(
-            image: imageUrl,
+            image: '',
             ownerID: data['ownerId'],
             placeID: responseBody['place_id'],
             isPublic: data['isPublic'],
@@ -88,17 +90,18 @@ class Places with ChangeNotifier {
         print('Going To Add Place Locallly');
         _placeslist.add(newPlace);
         print('Place Added Locally');
-        // final data1 = {
-        //   'userId': data['userID'],
-        //   // 'plantID': responseBody['plant_id'],
-        //   'placeID': responseBody['place_id'],
-        //   'credits': 300,
-        //   'isRelatedToPlanted': false,
-        //   'reason':
-        //       'Added A New Place At Lat: ${data['lat'].toString()} Long: ${data['long'].toString()}',
-        //   'image': backendLinkImage + imageUrl,
-        // };
-        // msg = await Credits.addCredits(data1);
+        final data1 = {
+          'userId': data['userID'],
+          'plantedID': null,
+          // 'placeID': responseBody['place_id'],
+          'credits': 300,
+          'isRelatedToPlanted': false,
+          'reason':
+              'Added A New Place At Lat: ${data['lat'].toString()} Long: ${data['long'].toString()}',
+          // 'image': backendLinkImage + imageUrl,
+          'image': '',
+        };
+        msg = await Credits.addCredits(data1);
       }
     } catch (e) {
       msg = e.toString();
