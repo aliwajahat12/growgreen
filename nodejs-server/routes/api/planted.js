@@ -9,10 +9,10 @@ const router = express.Router();
 router.get("/userId/:user_id/", getPlanted);
 
 
-// @ route:     GET /api/planted/plantId/:user_id/
+// @ route:     GET /api/planted/plant/:user_id/
 // @ desc:      Returns an Object with PlantedId = PlantedId
 // @ access:    a user can access his/her own plants
-router.get("/plantId/:user_id/", getPlantedObject);
+router.get("/plantId/:planted_Id/", getPlantedObject);
 
 // @ route:     POST /api/planted
 // @ desc:      Adds a new plant

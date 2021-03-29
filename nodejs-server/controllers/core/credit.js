@@ -12,7 +12,7 @@ module.exports = {
       )
       res.json({
         status: "success", foundPlantsCredits
-      })
+      });
     } catch (err) {
       console.log("Error in Getting Planted Credits: " + err.message);
       res.json({

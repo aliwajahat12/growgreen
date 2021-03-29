@@ -7,7 +7,6 @@ from flask_socketio import SocketIO, send, emit
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
-app.config["DEBUG"] = True
 
 new_model = tf.keras.models.load_model('./leaves_detection.h5')
 
@@ -78,11 +77,15 @@ def detect():
   plantableFraction = (1 - summ) * 100
   print("Plantable area:", (1 - summ) * 100, "%")
 
-  cv2.imwrite('output2.jpg', output)
+  cv2.imwrite('output.jpg', output)
 
   # emit("landCoverDone", {'lat': lat, "long": long, 'user_id': user_id, 'pred': pred})
 
   return jsonify({"pred": plantableFraction})
 
+@app.route("/")
+def check():
+  return jsonify({"Testing": 101})
+
 if __name__=='__main__':
-  app.run(host="*", port=5000)
+  app.run(debug=True)

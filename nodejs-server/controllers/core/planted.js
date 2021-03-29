@@ -12,7 +12,7 @@ module.exports = {
       const { user_id } = req.params;
       const plants_by_user = await PlantedModel.find({
         userId: mongoose.Types.ObjectId(user_id),
-      }).populate("plantId");
+      }).populate("plantId").populate('placeId');
       res.json({ planted_details: plants_by_user });
     } catch (err) {
       console.error("Error: " + err.message);
@@ -23,8 +23,8 @@ module.exports = {
     try {
       const { planted_Id } = req.params;
       const plant = await PlantedModel.findOne({
-        plantedId: mongoose.Types.ObjectId(planted_Id),
-      })
+        _id: mongoose.Types.ObjectId(planted_Id),
+      }).populate('plantId').populate('placeId');
       res.json({ plant: plant });
     } catch (err) {
       console.error("Error: " + err.message);
