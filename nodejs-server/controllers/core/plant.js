@@ -1,8 +1,10 @@
 const PlantModel = require("../../models/plant");
 
 module.exports = {
-  detectPlant: async (req, res) => {},
-  isAreaPlantable: async (req, res) => {},
+  detectPlant: async (req, res) => {
+  },
+  isAreaPlantable: (req, res) => {
+  },
   addPlant: async (req, res) => {
     try {
       const {

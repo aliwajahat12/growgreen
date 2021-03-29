@@ -7,12 +7,12 @@ module.exports = {
   getPlantedCredits: async (req, res) => {
     try {
       const { planted_Id } = req.body;
-      const foundPlantsCredits = CreditModel.find(
-        { plantedId: mongoose.Types.ObjectId(planted_Id)}
-      )
+      const foundPlantsCredits = await CreditModel.find(
+        { plantedId: mongoose.Types.ObjectId(planted_Id) }
+      );
       res.json({
         status: "success", foundPlantsCredits
-      })
+      });
     } catch (err) {
       console.log("Error in Getting Planted Credits: " + err.message);
       res.json({
@@ -41,7 +41,7 @@ module.exports = {
         reason: reason,
       });
       if (isRelatedToPlanted) {
-        newCredit.plantId = mongoose.Types.ObjectId(plantedId);
+        newCredit.plantedId = mongoose.Types.ObjectId(plantedId);
         const wateringCreditsPlant = await PlantedModel.findById(
           plantedId
         ).populate("plantId");

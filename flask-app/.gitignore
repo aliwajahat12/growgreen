@@ -1,2 +1,7 @@
 /venv
 /.vscode
+flask-ai-services-app.yaml
+d2.py
+.gcloudignore
+media
+detect.py
