@@ -153,15 +153,21 @@ class PlantDetailScreen extends StatelessWidget {
     plantHistory() {
       return Container(
         height: size.height * 0.448,
-        child: ListView.builder(
-          itemBuilder: (ctx, i) => detailRow(plantedDetails[i]),
-          itemCount: plantedDetails.length,
-        ),
+        child: plantedDetails.length > 0
+            ? ListView.builder(
+                itemBuilder: (ctx, i) => detailRow(plantedDetails[i]),
+                itemCount: plantedDetails.length,
+              )
+            : Center(
+                child: Text(
+                  'No History',
+                  style: TextStyle(fontSize: 15),
+                ),
+              ),
       );
     }
 
     Future<void> getPlantAndPlantedDetails() async {
-      //TODO: implement function to return the planted Details
       plantDetail = await Provider.of<Planteds>(context, listen: false)
           .getPlantDetails(plantedId);
       plantedDetails = await Provider.of<Credits>(context, listen: false)
@@ -237,24 +243,25 @@ class PlantDetailScreen extends StatelessWidget {
                                     fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                plantDetail.location,
+                                plantDetail.location ?? "",
                                 // 'Block 2 Gulistan e jauhar Karachi',
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 13),
                               ),
-                              Container(
-                                width: size.width * 0.5,
-                                height: size.height * 0.1,
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (ctx, i) => imagePlacer(
-                                    size.height * 0.075,
-                                    plantedDetails[i].image,
+                              if (plantedDetails.length > 0)
+                                Container(
+                                  width: size.width * 0.5,
+                                  height: size.height * 0.1,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder: (ctx, i) => imagePlacer(
+                                      size.height * 0.075,
+                                      plantedDetails[i].image,
+                                    ),
+                                    // 'https://atlas-content-cdn.pixelsquid.com/stock-images/potted-plant-flower-pot-mdm41mF-600.jpg'),
+                                    itemCount: plantedDetails.length,
                                   ),
-                                  // 'https://atlas-content-cdn.pixelsquid.com/stock-images/potted-plant-flower-pot-mdm41mF-600.jpg'),
-                                  itemCount: plantedDetails.length,
-                                ),
-                              ),
+                                )
                             ],
                           ),
                         ),

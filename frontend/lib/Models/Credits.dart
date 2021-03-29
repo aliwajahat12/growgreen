@@ -6,8 +6,8 @@ import 'package:http/http.dart' as http;
 
 class Credits with ChangeNotifier {
   String userID;
-  String plantID;
-  String placeID;
+  String plantedID;
+  // String placeID;
   int credits;
   String reason;
   DateTime date;
@@ -16,8 +16,8 @@ class Credits with ChangeNotifier {
 
   Credits(
       {this.userID,
-      this.plantID,
-      this.placeID,
+      this.plantedID,
+      // this.placeID,
       this.credits,
       this.reason,
       this.date,
@@ -26,8 +26,8 @@ class Credits with ChangeNotifier {
 
   Credits.fromJson(Map<String, dynamic> json)
       : this.userID = json['userID'],
-        this.plantID = json['plantID'],
-        this.placeID = json['placeID'],
+        this.plantedID = json['plantedID'] ?? null,
+        // this.placeID = json['placeID'],
         this.credits = json['credits'].toint(),
         this.reason = json['reason'],
         this.image = json['image'],
@@ -44,7 +44,7 @@ class Credits with ChangeNotifier {
         backendLink + 'credit/',
         body: {
           'userId': data['userID'],
-          'plantId': data['plantID'],
+          'plantedId': data['plantedID'],
           'isRelatedToPlanted': data['isRelatedToPlanted'].toString(),
           'credits': data['credits'].toString(),
           'reason': data['reason'],
@@ -69,11 +69,17 @@ class Credits with ChangeNotifier {
     List<Credits> _plantedCredits = [];
     try {
       print('In Func');
+      print(backendLink + 'credit/$plantedId');
       final response = await http.get(backendLink + 'credit/$plantedId');
-      print(response);
+      // print(response);
       final responseData = jsonDecode(response.body);
-      Iterable list = responseData['plants'];
-      _plantedCredits = list.map((model) => Credits.fromJson(model)).toList();
+      if (responseData['status'] != 'fail') {
+        print('Success');
+        Iterable list = responseData['foundPlantsCredits'];
+        if (list.length > 0)
+          _plantedCredits =
+              list.map((model) => Credits.fromJson(model)).toList();
+      }
     } catch (e) {
       print(e);
     }
