@@ -194,6 +194,8 @@ class _AddNewPlaceScreenState extends State<AddNewPlaceScreen> {
       'long': _currentPosition.longitude,
       'lat': _currentPosition.latitude,
       'ownerId': userID,
+      'image':
+          'https://maps.googleapis.com/maps/api/staticmap?center=${_currentPosition.latitude},${_currentPosition.longitude}&zoom=21&size=512x512&format=jpg&maptype=satellite&key=AIzaSyCr0-s_qBQozzmLIAzQvnUWwRSQUMuhwN4',
     };
     msg = await Provider.of<Places>(context, listen: false).addPlace(
         // File(imageFile.path),

@@ -6,9 +6,9 @@ const UserModel = require("../../models/user");
 module.exports = {
   getPlantedCredits: async (req, res) => {
     try {
-      const { planted_Id } = req.body;
-      const foundPlantsCredits = CreditModel.find(
-        { plantedId: mongoose.Types.ObjectId(planted_Id)}
+      const { planted_id } = req.params;
+      const foundPlantsCredits = await CreditModel.find(
+        { plantedId: mongoose.Types.ObjectId(planted_id)}
       )
       res.json({
         status: "success", foundPlantsCredits

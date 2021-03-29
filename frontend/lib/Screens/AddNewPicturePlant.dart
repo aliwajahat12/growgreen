@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:growgreen/Models/Credits.dart';
 import 'package:growgreen/Models/User.dart';
+import 'package:growgreen/Screens/HomeScreen.dart';
 import 'package:growgreen/Util/AddImageToFirebase.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -66,8 +67,26 @@ class AddNewPicturePlant extends StatelessWidget {
             );
           } else {
             return Center(
-              child: Container(
-                child: Text('Plant Growth Succeeded.\nPoints Won: 50'),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    child: Text(
+                      'Plant Growth Succeeded.\nPoints Earned: 50',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 15),
+                    ),
+                  ),
+                  RaisedButton(
+                    onPressed: () {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => HomeScreen()),
+                          (Route<dynamic> route) => false);
+                    },
+                    child: Text('Back To Home'),
+                  ),
+                ],
               ),
             );
           }

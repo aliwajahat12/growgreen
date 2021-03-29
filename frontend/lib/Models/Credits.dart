@@ -38,19 +38,21 @@ class Credits with ChangeNotifier {
     String msg = '';
     // final imageUrl = await addImage(imageFile, data['userID']);
     try {
-      print(data);
+      // print(data);
       print(backendLink + 'credit/');
+      final data1 = {
+        'userId': data['userId'],
+        'plantedId': data['plantedId'],
+        'isRelatedToPlanted': data['isRelatedToPlanted'],
+        'credits': data['credits'],
+        'reason': data['reason'],
+        'image': data['image'],
+        // 'date': DateTime.now().toIso8601String(),
+      };
+      print(data1);
       final response = await http.post(
         backendLink + 'credit/',
-        body: {
-          'userId': data['userID'],
-          'plantedId': data['plantedID'],
-          'isRelatedToPlanted': data['isRelatedToPlanted'].toString(),
-          'credits': data['credits'].toString(),
-          'reason': data['reason'],
-          'image': data['image'],
-          'date': DateTime.now().toIso8601String(),
-        },
+        body: data1.toString(),
       );
       print('Return From Credits Post Req');
       final responseBody = jsonDecode(response.body);

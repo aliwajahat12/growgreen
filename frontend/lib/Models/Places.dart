@@ -70,7 +70,7 @@ class Places with ChangeNotifier {
         'lat': data['lat'].toString(),
         'long': data['long'].toString(),
         'placeName': data['placeName'],
-        'placeImage': '',
+        'placeImage': data['image'],
         // 'placeImage': '/media/image-upload-1612102786024.jpg'
       });
       print('Returned From Post');
@@ -91,15 +91,15 @@ class Places with ChangeNotifier {
         _placeslist.add(newPlace);
         print('Place Added Locally');
         final data1 = {
-          'userId': data['userID'],
-          'plantedID': null,
+          'userId': data['ownerId'],
+          'plantedId': null,
           // 'placeID': responseBody['place_id'],
-          'credits': 300,
+          'credits': 50,
           'isRelatedToPlanted': false,
           'reason':
               'Added A New Place At Lat: ${data['lat'].toString()} Long: ${data['long'].toString()}',
           // 'image': backendLinkImage + imageUrl,
-          'image': '',
+          'image': data['image'],
         };
         msg = await Credits.addCredits(data1);
       }
