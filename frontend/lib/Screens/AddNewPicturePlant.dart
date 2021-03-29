@@ -22,7 +22,7 @@ class AddNewPicturePlant extends StatelessWidget {
       final imageUrl = await uploadImage(File(imageFile.path), userId);
       final data1 = {
         'userId': userId,
-        'plantedID': plantedId,
+        'plantedId': plantedId,
         // 'placeID': responseBody['place_id'],
         'credits': 50,
         'isRelatedToPlanted': true,

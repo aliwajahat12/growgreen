@@ -101,7 +101,7 @@ class Places with ChangeNotifier {
           // 'image': backendLinkImage + imageUrl,
           'image': data['image'],
         };
-        msg = await Credits.addCredits(data1);
+        msg = await Credits.addCreditsForAddingPlace(data1);
       }
     } catch (e) {
       msg = e.toString();

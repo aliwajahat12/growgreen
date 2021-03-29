@@ -28,17 +28,49 @@ class Credits with ChangeNotifier {
       : this.userID = json['userID'],
         this.plantedID = json['plantedID'] ?? null,
         // this.placeID = json['placeID'],
-        this.credits = json['credits'].toint(),
+        this.credits = json['credits'],
         this.reason = json['reason'],
         this.image = json['image'],
         this.approvalStage = json['approvalStage'],
-        this.date = json['date'].toDate();
+        this.date = DateTime.parse(json['date']);
 
   static Future<String> addCredits(Map<String, dynamic> data) async {
     String msg = '';
     // final imageUrl = await addImage(imageFile, data['userID']);
     try {
-      // print(data);
+      print(backendLink + 'credit/');
+      final data1 = {
+        'userId': data['userId'],
+        'plantedId': data['plantedId'],
+        'isRelatedToPlanted': data['isRelatedToPlanted'].toString(),
+        'credits': data['credits'].toString(),
+        'reason': data['reason'],
+        'image': data['image'],
+        // 'date': DateTime.now().toIso8601String(),
+      };
+      print(data1);
+      final response = await http.post(
+        backendLink + 'credit/',
+        body: data1,
+      );
+      print('Return From Credits Post Req');
+      final responseBody = jsonDecode(response.body);
+      print(responseBody);
+      if (responseBody['status'] == 'fail') {
+        msg = responseBody['reason'];
+      }
+    } catch (e) {
+      msg = e.toString();
+      print('Error Returned: $e');
+    }
+    return msg;
+  }
+
+  static Future<String> addCreditsForAddingPlace(
+      Map<String, dynamic> data) async {
+    String msg = '';
+    // final imageUrl = await addImage(imageFile, data['userID']);
+    try {
       print(backendLink + 'credit/');
       final data1 = {
         'userId': data['userId'],
@@ -46,7 +78,7 @@ class Credits with ChangeNotifier {
         'isRelatedToPlanted': data['isRelatedToPlanted'],
         'credits': data['credits'],
         'reason': data['reason'],
-        'image': data['image'],
+        'image': data['image'].toString(),
         // 'date': DateTime.now().toIso8601String(),
       };
       print(data1);
@@ -70,7 +102,6 @@ class Credits with ChangeNotifier {
   Future<List<Credits>> getPlantedCredits(String plantedId) async {
     List<Credits> _plantedCredits = [];
     try {
-      print('In Func');
       print(backendLink + 'credit/$plantedId');
       final response = await http.get(backendLink + 'credit/$plantedId');
       // print(response);

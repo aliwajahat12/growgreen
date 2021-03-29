@@ -14,7 +14,35 @@ class PlantDetailScreen extends StatelessWidget {
     Planted plantDetail;
     List<Credits> plantedDetails;
 
-    imagePlacer(double height, String link) {
+    String monthIntToString(int month) {
+      if (month == 1) {
+        return 'Jan';
+      } else if (month == 2) {
+        return 'Feb';
+      } else if (month == 3) {
+        return 'Mar';
+      } else if (month == 4) {
+        return 'Apr';
+      } else if (month == 5) {
+        return 'May';
+      } else if (month == 6) {
+        return 'Jun';
+      } else if (month == 7) {
+        return 'Jul';
+      } else if (month == 8) {
+        return 'Aug';
+      } else if (month == 9) {
+        return 'Sep';
+      } else if (month == 10) {
+        return 'Oct';
+      } else if (month == 11) {
+        return 'Nov';
+      } else {
+        return 'Dec';
+      }
+    }
+
+    imagePlacer(double height, String link, BoxFit fit) {
       return Container(
         height: height,
         width: height,
@@ -28,7 +56,7 @@ class PlantDetailScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           child: Image.network(
             link,
-            fit: BoxFit.contain,
+            fit: fit,
           ),
         ),
       );
@@ -98,7 +126,7 @@ class PlantDetailScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    plantedDetail.date.month.toString(),
+                    monthIntToString(plantedDetail.date.month),
                     style: TextStyle(color: Colors.white, fontSize: 15),
                   ),
                   Text(
@@ -172,6 +200,7 @@ class PlantDetailScreen extends StatelessWidget {
           .getPlantDetails(plantedId);
       plantedDetails = await Provider.of<Credits>(context, listen: false)
           .getPlantedCredits(plantedId);
+      plantedDetails = plantedDetails.reversed.toList();
     }
 
     return Scaffold(
@@ -225,7 +254,8 @@ class PlantDetailScreen extends StatelessWidget {
                         child: imagePlacer(
                             size.height * 0.22,
                             // 'https://atlas-content-cdn.pixelsquid.com/stock-images/potted-plant-flower-pot-mdm41mF-600.jpg'),
-                            plantDetail.image),
+                            plantDetail.image,
+                            BoxFit.contain),
                       ),
                       Positioned(
                         top: size.height * 0.1,
@@ -255,9 +285,9 @@ class PlantDetailScreen extends StatelessWidget {
                                   child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
                                     itemBuilder: (ctx, i) => imagePlacer(
-                                      size.height * 0.075,
-                                      plantedDetails[i].image,
-                                    ),
+                                        size.height * 0.075,
+                                        plantedDetails[i].image,
+                                        BoxFit.cover),
                                     // 'https://atlas-content-cdn.pixelsquid.com/stock-images/potted-plant-flower-pot-mdm41mF-600.jpg'),
                                     itemCount: plantedDetails.length,
                                   ),
